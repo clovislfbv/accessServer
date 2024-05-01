@@ -1,0 +1,11 @@
+services:
+  web:
+    # image: php:apache
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/var/www/html
+      - ./000-default.conf:/etc/apache2/conf.d/000-default.conf
