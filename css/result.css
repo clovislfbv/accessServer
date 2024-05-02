@@ -1,0 +1,9 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.img {
+    margin-right: 0.5vw;
+}

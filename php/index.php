@@ -8,7 +8,7 @@
     <title>Connectez-vous à votre serveur</title>
 </head>
 <body>
-    <form action="result.php" method="post">
+    <form id="form" action="add_info_to_session.php" method="post">
         <label for="host">Adresse du serveur</label>
         <input type="text" name="host" id="host" required>
         <label for="user">Nom d'utilisateur</label>
