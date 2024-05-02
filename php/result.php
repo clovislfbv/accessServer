@@ -23,7 +23,7 @@
                 } else {
                     $index = 0;
                 }
-                if ($index == strlen($small)) {
+                if ($index == strlen($small) && $i == strlen($big) - 1) {
                     return $i - strlen($small) + 1;
                 }
             }
