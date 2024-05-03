@@ -30,7 +30,7 @@
             return -1;
         }
 
-        include_once 'conn.php';
+        include 'conn.php';
 
         if (!isset($_SESSION['current'])) {
             $_SESSION['current'] = "./";
@@ -72,5 +72,8 @@
             echo "</div>";
         }
     ?>
+    <div class="new_folder">
+        <a class="create_folder" href="result.php"><h3>Créer un nouveau dossier</h3></a>
+    </div>
 </body>
 </html>

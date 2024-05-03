@@ -24,3 +24,14 @@ export function resetSession(){
         },
     });
 }
+
+export function mkdir(folder){
+    $j.ajax({
+        url: '../php/helper.php',
+        type: 'POST',
+        data: {
+            action: 'mkdir',
+            folder: folder
+        },
+    });
+}
