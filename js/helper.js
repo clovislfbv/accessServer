@@ -35,3 +35,20 @@ export function mkdir(folder){
         },
     });
 }
+
+export function rm(folder){
+    $j.ajax({
+        url: '../php/helper.php',
+        type: 'POST',
+        data: {
+            action: 'rm',
+            folder: folder
+        },
+        success: function(data){
+            console.log(data);
+        },
+        error: function(err){
+            console.log(err);
+        }
+    });
+}

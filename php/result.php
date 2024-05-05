@@ -6,9 +6,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="../css/result.css">
     <script src="../js/jquery.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script src="../js/script_website.js" type="module"></script>
     <title>Document</title>
 </head>
@@ -53,7 +55,7 @@
         $outputArray = explode("\n", $output);
 
         for ($i = 0; $i < count($outputArray); $i++) {
-            echo "<div class='container'>";
+            echo "<div class='container float-left'>";
             if ($i == 0) {
                 echo "<h3>" . $outputArray[$i] . "</h3>";
             } else if ($i > 0 && $folders[$i-1] == "..") {
@@ -69,11 +71,33 @@
                 $newString = substr_replace($outputArray[$i], "<a id='" . $i-1 . "' class='file' href='result.php'>", $index, 0);
                 echo "<img class='img' src='../assets/text.gif' alt='file'><h3>" . $newString . "<br></h3></a>";
             }
+
+            if ($i > 2 && count($outputArray) - 1 != $i){
+                echo "<img class='poubelle' id='del_" . $i-1 . "' src='../assets/bin.png' alt='bin-logo'>";
+            }
             echo "</div>";
         }
     ?>
-    <div class="new_folder">
+    <div class="new_folder float-left">
         <a class="create_folder" href="result.php"><h3>Créer un nouveau dossier</h3></a>
+    </div>
+    <div class="modal" id="confirmModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary">Are you sure about that ?</h5>
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-primary" id="modal-body">
+                <p>Are you sure to delete that file or folder ?</p>
+            </div>
+            <div class="modal-footer text-primary">
+                <button type="submit" class="btn btn-primary" id="confirm">Confirm</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

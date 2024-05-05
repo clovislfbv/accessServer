@@ -2,8 +2,13 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: flex-start;
 }
 
 .img {
     margin-right: 0.5vw;
+}
+
+.create_folder {
+    padding-left: 1vw;
 }

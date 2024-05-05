@@ -12,7 +12,23 @@
             case "mkdir":
                 make_dir();
                 break;
+            case "rm":
+                remove();
+                break;
         }
+    }
+
+    function connect(){
+        $host = $_SESSION['host'];
+        $user = $_SESSION['user'];
+        $password = $_SESSION['password'];
+        $port = $_SESSION['port'];
+
+        $connection = ssh2_connect($host, $port);
+
+        ssh2_auth_password($connection, $user, $password);
+
+        return $connection;
     }
 
     function cd(){
@@ -28,22 +44,35 @@
     }
 
     function make_dir(){
-        $host = $_SESSION['host'];
-        $user = $_SESSION['user'];
-        $password = $_SESSION['password'];
-        $port = $_SESSION['port'];
-
-        global $connection;
-
-        $connection = ssh2_connect($host, $port);
-
-        ssh2_auth_password($connection, $user, $password);
-
         $folder = $_POST["folder"];
         $current = $_SESSION['current'];
         $command = 'cd ' . $current . ' && mkdir ' . $folder;
+        $connection = connect();
         $stream = ssh2_exec($connection, $command);
         stream_set_blocking($stream, true);
         $stream_out = ssh2_fetch_stream($stream, SSH2_STREAM_STDIO);
         $output = stream_get_contents($stream_out);
+    }
+
+    function remove(){
+        $folder = $_POST["folder"];
+        $current = $_SESSION['current'];
+        $user = $_SESSION['user'];
+        $connection = connect();
+        $command = 'cd ' . $current . ' && pwd';
+        $stream = ssh2_exec($connection, $command);
+        stream_set_blocking($stream, true);
+        $stream_out = ssh2_fetch_stream($stream, SSH2_STREAM_STDIO);
+        $output = stream_get_contents($stream_out);
+
+        $output = str_replace("/home/" . $user, ".", $output);
+        $output[strlen($output) - 1] = '/';
+        $_SESSION['current'] = $output;
+
+        $current = $_SESSION['current'];
+        $command2 = 'cd ' . $current . ' && rm -rf ' . $folder;
+        $stream2 = ssh2_exec($connection, $command2);
+        stream_set_blocking($stream2, true);
+        $stream_out2 = ssh2_fetch_stream($stream2, SSH2_STREAM_STDIO);
+        $output2 = stream_get_contents($stream_out2);
     }

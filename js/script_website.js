@@ -1,8 +1,13 @@
-import { cd, resetSession, mkdir } from './helper.js';
+import { cd, resetSession, mkdir, rm } from './helper.js';
 
 var $j = jQuery.noConflict();
 
 $j(document).ready(function(){
+    if ($j("#confirmModal").length) {
+        console.log('confirmModal');
+        $j("#confirmModal").modal("hide");
+    }
+
     $j('.folder').click(function(e){
         console.log('click');
         e.preventDefault();
@@ -28,5 +33,19 @@ $j(document).ready(function(){
         $j(".cancel").click(function(e){
             window.location.href = '../php/result.php';
         });
+    });
+
+    var del_id
+    $j(".poubelle").click(function(e){
+        e.preventDefault();
+        $j("#confirmModal").modal("show");
+        del_id = $j(this).attr('id');
+    });
+
+    $j("#confirm").click(function(e){
+        var folder_id = del_id.replace('del_', '');
+        var folder = $j("#" + folder_id).text();
+        rm(folder);
+        window.location.href = '../php/result.php';
     });
 });
