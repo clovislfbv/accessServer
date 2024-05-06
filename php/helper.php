@@ -18,6 +18,10 @@
         }
     }
 
+    if (isset($_FILES['file0'])){
+        scp();
+    }
+
     function connect(){
         $host = $_SESSION['host'];
         $user = $_SESSION['user'];
@@ -75,4 +79,33 @@
         stream_set_blocking($stream2, true);
         $stream_out2 = ssh2_fetch_stream($stream2, SSH2_STREAM_STDIO);
         $output2 = stream_get_contents($stream_out2);
+    }
+
+    function scp(){
+        echo isset($_FILES['file0']);
+        for ($i = 0; isset($_FILES['file' . $i]); $i++) {
+            $file = $_FILES['file' . $i];
+            
+            // Check for upload errors
+            if ($file['error'] !== UPLOAD_ERR_OK) {
+                echo 'Upload error: ' . $file['error'];
+                continue;
+            }
+            
+            $connection = connect();
+
+            // Move the uploaded file to a directory on your server
+            $dir = '../Downloads/';
+            move_uploaded_file($file['tmp_name'], $dir . $file['name']);
+
+            $files = scandir($dir);
+
+            foreach ($files as $file) {
+                if ($file === '.' || $file === '..') {
+                    continue;  // Skip current directory and parent directory
+                }
+                ssh2_scp_send($connection, $dir . $file, $_SESSION['current'] . $file, 0644);
+                exec("rm ../Downloads/*");
+            }
+        }
     }

@@ -1,6 +1,6 @@
 var $j = jQuery.noConflict();
 
-export function cd(folder){
+export function cd(folder) {
     $j.ajax({
         url: '../php/helper.php',
         type: 'POST',
@@ -9,13 +9,13 @@ export function cd(folder){
             folder: folder
         },
         async: false,
-        success: function(data){
+        success: function (data) {
             console.log(data);
         }
     });
 }
 
-export function resetSession(){
+export function resetSession() {
     $j.ajax({
         url: '../php/helper.php',
         type: 'POST',
@@ -25,7 +25,7 @@ export function resetSession(){
     });
 }
 
-export function mkdir(folder){
+export function mkdir(folder) {
     $j.ajax({
         url: '../php/helper.php',
         type: 'POST',
@@ -36,7 +36,7 @@ export function mkdir(folder){
     });
 }
 
-export function rm(folder){
+export function rm(folder) {
     $j.ajax({
         url: '../php/helper.php',
         type: 'POST',
@@ -44,10 +44,33 @@ export function rm(folder){
             action: 'rm',
             folder: folder
         },
-        success: function(data){
+        success: function (data) {
             console.log(data);
         },
-        error: function(err){
+        error: function (err) {
+            console.log(err);
+        }
+    });
+}
+
+export function scp(files) {
+    var formData = new FormData();
+
+    for (var i = 0; i < files.length; i++) {
+        formData.append('file' + i, files[i]);
+    }
+
+    $j.ajax({
+        url: '../php/helper.php',
+        type: 'POST',
+        data: formData,
+        async: false,
+        processData: false,  // tell jQuery not to process the data
+        contentType: false,  // tell jQuery not to set contentType
+        success: function (data) {
+            console.log(data);
+        },
+        error: function (err) {
             console.log(err);
         }
     });

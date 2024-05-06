@@ -12,3 +12,18 @@
 .create_folder {
     padding-left: 1vw;
 }
+
+.blue {
+    border: 10px solid blue;
+    color: blue;
+}
+
+#drop_zone {
+    width: 200px;
+    height: 200px;
+    border: 2px dashed #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
