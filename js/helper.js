@@ -44,6 +44,7 @@ export function rm(folder) {
             action: 'rm',
             folder: folder
         },
+        async: false,
         success: function (data) {
             console.log(data);
         },

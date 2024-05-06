@@ -54,7 +54,7 @@
             $outputArray = explode("\n", $output);
 
             for ($i = 0; $i < count($outputArray); $i++) {
-                echo "<div class='container'>";
+                echo "<div class='container float-left'>";
                 if ($i == 0) {
                     echo "<h3>" . $outputArray[$i] . "</h3>";
                 } else if ($i > 0 && $folders[$i-1] == "..") {

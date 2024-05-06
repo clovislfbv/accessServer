@@ -96,6 +96,10 @@
 
             // Move the uploaded file to a directory on your server
             $dir = '../Downloads/';
+            if (!is_dir($dir)) {
+                exec("mkdir " . $dir);
+            }
+
             move_uploaded_file($file['tmp_name'], $dir . $file['name']);
 
             $files = scandir($dir);
