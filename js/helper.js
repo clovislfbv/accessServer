@@ -54,7 +54,7 @@ export function rm(folder) {
     });
 }
 
-export function scp(files) {
+export function send_files(files) {
     var formData = new FormData();
 
     for (var i = 0; i < files.length; i++) {
@@ -74,5 +74,37 @@ export function scp(files) {
         error: function (err) {
             console.log(err);
         }
+    });
+}
+
+export function receive_file(file) {
+    $j.ajax({
+        url: '../php/helper.php',
+        type: 'POST',
+        data: {
+            action: 'receive_file',
+            file: file
+        },
+        async: false,
+        success: function (data) {
+            console.log(data);
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
+
+}
+
+export function empty_downloaded_files() {
+    $j.ajax({
+        url: '../php/helper.php',
+        type: 'POST',
+        data: {
+            action: 'empty_downloaded_files'
+        },
+        success: function (data) {
+            console.log(data);
+        },
     });
 }

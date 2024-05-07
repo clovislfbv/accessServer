@@ -1,4 +1,4 @@
-import { cd, resetSession, mkdir, rm, scp } from './helper.js';
+import { cd, resetSession, mkdir, rm, send_files, receive_file, empty_downloaded_files } from './helper.js';
 
 var $j = jQuery.noConflict();
 
@@ -13,6 +13,20 @@ $j(document).ready(function () {
         e.preventDefault();
         var folder = $j(this).text();
         cd(folder);
+        empty_downloaded_files();
+        window.location.href = '../php/result.php';
+    });
+
+    $j(".file").click(function (e) {
+        e.preventDefault();
+        let filename = $j(this).text();
+        receive_file(filename);
+        let link = document.createElement('a');
+        link.href = "../remoteFiles/" + filename;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
         window.location.href = '../php/result.php';
     });
 
@@ -82,11 +96,16 @@ $j(document).ready(function () {
 
     $j(".send_files").click(function (e) {
         var files = $j("#myFile").prop("files");
-        scp(files);
+        send_files(files);
         window.location.href = '../php/result.php';
     });
 
     $j(".cancel_files").click(function (e) {
         window.location.href = '../php/result.php';
     });
+
+    // window.onbeforeunload = function (event) {
+    //     console.log("onbeforeunload");
+    //     empty_downloaded_files();
+    // };
 });

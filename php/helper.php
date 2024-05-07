@@ -1,6 +1,8 @@
 <?php
-    session_start();
-
+    if (!isset($_SESSION)){
+        session_start();
+    }
+    
     if (isset($_POST["action"])){
         switch ($_POST["action"]) {
             case "cd":
@@ -15,11 +17,17 @@
             case "rm":
                 remove();
                 break;
+            case "receive_file":
+                receive_file();
+                break;
+            case "empty_downloaded_files":
+                empty_downloaded_files();
+                break;
         }
     }
 
     if (isset($_FILES['file0'])){
-        scp();
+        send_files();
     }
 
     function connect(){
@@ -81,8 +89,8 @@
         $output2 = stream_get_contents($stream_out2);
     }
 
-    function scp(){
-        echo isset($_FILES['file0']);
+    function send_files(){
+        exec("rm ../Downloads/*");
         for ($i = 0; isset($_FILES['file' . $i]); $i++) {
             $file = $_FILES['file' . $i];
             
@@ -112,4 +120,32 @@
                 exec("rm ../Downloads/*");
             }
         }
+    }
+
+    function receive_file(){
+        $connection = connect();
+
+        $file = $_POST["file"];
+        $remoteFile = $_SESSION['current'] . $file;
+        $dir = "../remoteFiles/";
+        $localFile = $dir . $file;
+
+        if (!is_dir($dir)) {
+            exec("mkdir " . $dir);
+        }
+
+        if (!file_exists($localFile)) {
+            $stream = ssh2_exec($connection, '[ -d ' . $remoteFile . ' ] && echo "directory" || echo "file"');
+            stream_set_blocking($stream, true);
+            $stream_out = ssh2_fetch_stream($stream, SSH2_STREAM_STDIO);
+            $output = stream_get_contents($stream_out);
+
+            if (trim($output) === 'file') {
+                ssh2_scp_recv($connection, $remoteFile, $localFile);
+            }
+        }
+    }
+
+    function empty_downloaded_files(){
+        exec("rm -rf ../remoteFiles/");
     }
