@@ -82,7 +82,7 @@
         $_SESSION['current'] = $output;
 
         $current = $_SESSION['current'];
-        $command2 = 'cd ' . $current . ' && rm -rf ' . $folder;
+        $command2 = "cd " . $current . " && rm -rf '" . $folder . "'";
         $stream2 = ssh2_exec($connection, $command2);
         stream_set_blocking($stream2, true);
         $stream_out2 = ssh2_fetch_stream($stream2, SSH2_STREAM_STDIO);

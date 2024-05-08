@@ -8,6 +8,11 @@ $j(document).ready(function () {
         $j("#confirmModal").modal("hide");
     }
 
+    if ($j("#previewModal").length) {
+        console.log('previewModal');
+        $j("#previewModal").modal("hide");
+    }
+
     $j('.folder').click(function (e) {
         console.log('click');
         e.preventDefault();
@@ -59,6 +64,7 @@ $j(document).ready(function () {
     $j("#confirm").click(function (e) {
         var folder_id = del_id.replace('del_', '');
         var folder = $j("#" + folder_id).text();
+        console.log(folder);
         rm(folder);
         window.location.href = '../php/result.php';
     });
@@ -102,6 +108,41 @@ $j(document).ready(function () {
 
     $j(".cancel_files").click(function (e) {
         window.location.href = '../php/result.php';
+    });
+
+    $j(".preview").click(function (e) {
+        var file_id = $j(this).attr('id').replace('preview_', '');
+        var filename = $j("#" + file_id).text();
+        console.log(filename);
+        receive_file(filename);
+        console.log("received file");
+        var directory = "../remoteFiles/";
+        $j("#previewModal").find(".modal-content").resizable({
+            handles: 'n, e, s, w, ne, sw, se, nw',
+        }).draggable({
+            handle: '.modal-header'
+        });
+        $j("#previewModal").modal("show");
+        $j("#previewTitle").text(filename);
+        var filePath = directory + filename;
+
+        $j("#previewModal").find(".modal-content").css({ "height": "70vh" })
+        $j(".previewBody").css({ "height": "65vh" })
+
+        var fileExtension = filename.split('.').pop().toLowerCase();
+        var imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'];
+
+        if (imageExtensions.includes(fileExtension)) {
+            $j(".previewBody").html("<object data='" + filePath + "' type='image/" + fileExtension + "' allowfullscreen></object>");
+        } else if (fileExtension === 'pdf') {
+            $j(".previewBody").html("<object data='" + filePath + "' type='application/pdf' width='100%' height='100%' allowfullscreen></object>");
+        } else {
+            $j(".previewBody").html("<object data='" + filePath + "' width='100%' height='100%'><param name='allowFullScreen' value='true'></param></object>");
+        }
+    });
+
+    $j("#previewModal").on('hidden.bs.modal', function () {
+        $j(".previewBody").html("");
     });
 
     // window.onbeforeunload = function (event) {
