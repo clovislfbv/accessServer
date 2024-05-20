@@ -29,6 +29,7 @@ export function mkdir(folder) {
     $j.ajax({
         url: '../php/helper.php',
         type: 'POST',
+	async: false,
         data: {
             action: 'mkdir',
             folder: folder
