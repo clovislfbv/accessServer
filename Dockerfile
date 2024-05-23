@@ -8,8 +8,6 @@ RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
 RUN echo "upload_max_filesize = 5000M" > /usr/local/etc/php/conf.d/upload.ini
 RUN echo "post_max_size = 5000M" >> /usr/local/etc/php/conf.d/upload.ini
 
-RUN apt-get update && apt-get install -y certbot python3-certbot-apache
-
 WORKDIR /var/www/html/
 
 EXPOSE ${port} ${port2}

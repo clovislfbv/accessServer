@@ -3,7 +3,11 @@
     $host = $_POST['host'];
     $user = $_POST['user'];
     $password = $_POST['password'];
-    $port = $_POST['port'];
+    if ($_POST['port'] == "") {
+        $port = 22;
+    } else {
+        $port = $_POST['port'];
+    }
 
     $_SESSION['host'] = $host;
     $_SESSION['user'] = $user;
