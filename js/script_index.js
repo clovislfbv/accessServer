@@ -1,6 +1,15 @@
 var $j = jQuery.noConflict();
 
 $j(document).ready(function () {
+    $j('#password').prop('disabled', false);
+    $j('#password').prop('required', true);
+
+    $j("#pubfile").prop('disabled', true);
+    $j("#pubfile").prop('required', false);
+
+    $j("#privfile").prop('disabled', true);
+    $j("#privfile").prop('required', false);
+
     window.matchMedia("(orientation: portrait)").addEventListener("change", e => {
         const portrait = e.matches;
         if (portrait) {
@@ -37,6 +46,58 @@ $j(document).ready(function () {
                 "height": "100%",
                 "width": "25%"
             });
+        }
+    });
+
+    $j('.with_password').change(function () {
+        if ($j(this).is(":checked")) {
+            $j('#password').prop('disabled', false);
+            $j('#password').prop('required', true);
+
+            $j("#pubfile").prop('disabled', true);
+            $j("#pubfile").prop('required', false);
+
+            $j("#privfile").prop('disabled', true);
+            $j("#privfile").prop('required', false);
+
+            $j(".with_pubfile").prop('checked', false);
+        } else {
+            $j('#password').prop('disabled', true);
+            $j('#password').prop('required', false);
+
+            $j("#pubfile").prop('disabled', false);
+            $j("#pubfile").prop('required', true);
+
+            $j("#privfile").prop('disabled', false);
+            $j("#privfile").prop('required', true);
+
+            $j(".with_pubfile").prop('checked', true);
+        }
+    });
+
+    $j('.with_pubfile').change(function () {
+        if ($j(this).is(":checked")) {
+            $j('#password').prop('disabled', true);
+            $j('#password').prop('required', false);
+
+            $j("#pubfile").prop('disabled', false);
+            $j("#pubfile").prop('required', true);
+
+            $j("#privfile").prop('disabled', false);
+            $j("#privfile").prop('required', true);
+
+            $j(".with_password").prop('checked', false);
+        } else {
+            $j('#password').prop('disabled', false);
+            $j('#password').prop('required', true);
+
+            $j("#pubfile").prop('disabled', true);
+            $j("#pubfile").prop('required', false);
+
+            $j("#privfile").prop('disabled', true);
+            $j("#privfile").prop('required', false);
+
+            $j(".with_password").prop('checked', true);
         }
     });
 });

@@ -21,25 +21,46 @@
                 <div class="card-body">
                     <h3 class="description">Connectez-vous à votre serveur distant</h3>
                     <div class="component">
-                        <form id="form" action="add_info_to_session.php" method="post">
-                            <div class="host">
-                                <label for="host">Adresse du serveur</label>
-                                <input type="text" name="host" id="host" required>
-                            </div>
-                            <div class="user">
-                                <label for="user">Nom d'utilisateur</label>
-                                <input type="text" name="user" id="user" required>
-                            </div>
-                            <div class="password">
-                                <label for="password">Mot de passe</label>
-                                <input type="password" name="password" id="password" required>
-                            </div>
-                            <div class="port">
-                                <label for="port">Port</label>
-                                <input type="port" name="port" id="port" placeholder="22">
-                            </div>
-                            <input type="submit" class="submit_btn" value="Se connecter">
-                        </form>
+                        <div class="left_card">
+                            <input type="radio" class="with_password" checked>
+                            <input type="radio" class="with_pubfile">
+                        </div>
+                        <div class="center_card">
+                            <form id="form" action="add_info_to_session.php" method="post">
+                                <div class="host">
+                                    <label for="host">Adresse du serveur</label>
+                                    <input type="text" name="host" id="host" required>
+                                </div>
+                                <div class="user">
+                                    <label for="user">Nom d'utilisateur</label>
+                                    <input type="text" name="user" id="user" required>
+                                </div>
+                                <div class="password">
+                                    <div class="password_zone">
+                                        <label for="password">Mot de passe</label>
+                                    </div>
+                                    <input type="password" name="password" id="password" required>
+                                </div>
+                                <div class="pubfile">
+                                    <div class="pubfile_zone">
+                                        <label for="pubfile">Fichier de clé publique</label>
+                                    </div>
+                                    <input type="file" name="pubfile" id="pubfile" accept=".pub">
+                                </div>
+                                <div class="privfile">
+                                    <div class="privfile_zone">
+                                        <label for="privfile">Fichier de clé privée</label>
+                                    </div>
+                                    <input type="file" name="privfile" id="privfile" accept=".pem">
+                                </div>
+                                <div class="port">
+                                    <label for="port">Port</label>
+                                    <input type="port" name="port" id="port" placeholder="22">
+                                </div>
+                                <input type="submit" class="submit_btn" value="Se connecter">
+                            </form>
+                        </div>
+                        <div class="right_card"></div>
                     </div>
                 </div>
             </div>

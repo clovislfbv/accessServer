@@ -103,6 +103,7 @@
             </div>
         </div>
     </div>
+    <i class="bi bi-arrow-left-circle"></i>
     <div class="modal" id="previewModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -115,5 +116,6 @@
             </div>
         </div>
     </div>
+    <i class="bi bi-arrow-right-circle"></i>
 </body>
 </html>

@@ -9,6 +9,8 @@
         $port = $_POST['port'];
     }
 
+    echo $password . " test";
+
     $_SESSION['host'] = $host;
     $_SESSION['user'] = $user;
     $_SESSION['password'] = $password;

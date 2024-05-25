@@ -11,6 +11,8 @@ $j(document).ready(function () {
     if ($j("#previewModal").length) {
         console.log('previewModal');
         $j("#previewModal").modal("hide");
+        $j(".bi-arrow-left-circle").addClass("d-none");
+        $j(".bi-arrow-right-circle").addClass("d-none");
     }
 
     $j('.folder').click(function (e) {
@@ -111,6 +113,8 @@ $j(document).ready(function () {
     });
 
     $j(".preview").click(function (e) {
+        $j(".bi-arrow-left-circle").removeClass("d-none");
+        $j(".bi-arrow-right-circle").removeClass("d-none");
         var file_id = $j(this).attr('id').replace('preview_', '');
         var filename = $j("#" + file_id).text();
         console.log(filename);
@@ -119,8 +123,6 @@ $j(document).ready(function () {
         var directory = "../remoteFiles/";
         $j("#previewModal").find(".modal-content").resizable({
             handles: 'n, e, s, w, ne, sw, se, nw',
-        }).draggable({
-            handle: '.modal-header'
         });
         $j("#previewModal").modal("show");
         $j("#previewTitle").text(filename);
@@ -142,6 +144,8 @@ $j(document).ready(function () {
     });
 
     $j("#previewModal").on('hidden.bs.modal', function () {
+        $j(".bi-arrow-left-circle").addClass("d-none");
+        $j(".bi-arrow-right-circle").addClass("d-none");
         $j(".previewBody").html("");
     });
 

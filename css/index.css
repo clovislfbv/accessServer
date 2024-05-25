@@ -54,20 +54,21 @@ form {
     flex-direction: column;
     align-items: center;
     padding-bottom: 2.5vh;
+    padding-top: 2.5vh;
 }
 
 .user {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-bottom: 2.5vh;
+    padding-bottom: 5vh;
 }
 
 .password {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-bottom: 2.5vh;
+    padding-bottom: 5vh;
 }
 
 .port {
@@ -75,4 +76,42 @@ form {
     flex-direction: column;
     align-items: center;
     padding-bottom: 2.5vh;
+}
+
+.password_zone,
+.pubfile_zone,
+.privfile_zone {
+    display: flex;
+    width: 30vw;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.with_password,
+.with_pubfile {
+    width: 25%;
+}
+
+.with_password {
+    margin-top: 5vh;
+}
+
+.with_pubfile {
+    margin-top: 5vw;
+}
+
+.left_card,
+.right_card {
+    height: 100%;
+    width: 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.center_card {
+    height: 100%;
+    width: 80%;
 }
