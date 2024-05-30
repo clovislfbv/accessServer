@@ -29,7 +29,7 @@ export function mkdir(folder) {
     $j.ajax({
         url: '../php/helper.php',
         type: 'POST',
-	async: false,
+        async: false,
         data: {
             action: 'mkdir',
             folder: folder
@@ -62,6 +62,9 @@ export function send_files(files) {
         formData.append('file' + i, files[i]);
     }
 
+    console.log(files);
+    console.log(formData);
+
     $j.ajax({
         url: '../php/helper.php',
         type: 'POST',
@@ -69,6 +72,65 @@ export function send_files(files) {
         async: false,
         processData: false,  // tell jQuery not to process the data
         contentType: false,  // tell jQuery not to set contentType
+        success: function (data) {
+            console.log(data);
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
+}
+
+export function dl_key_file(file) {
+    var formData = new FormData();
+    formData.append('keyfile', file);
+    console.log(file);
+    console.log(formData);
+
+    $j.ajax({
+        url: '../php/helper.php',
+        type: 'POST',
+        data: formData,
+        async: false,
+        processData: false,  // tell jQuery not to process the data
+        contentType: false,  // tell jQuery not to set contentType
+        success: function (data) {
+            console.log(data);
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
+
+}
+
+export function setPubKey(file) {
+    $j.ajax({
+        url: '../php/helper.php',
+        type: 'POST',
+        data: {
+            action: 'set_pubkey',
+            file: file
+        },
+        async: false,
+        success: function (data) {
+            console.log(data);
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
+}
+
+export function setPrivKey(file) {
+    $j.ajax({
+        url: '../php/helper.php',
+        type: 'POST',
+        data: {
+            action: 'set-privkey',
+            file: file
+        },
+        async: false,
         success: function (data) {
             console.log(data);
         },

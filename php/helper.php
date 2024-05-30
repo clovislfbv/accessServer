@@ -23,11 +23,21 @@
             case "empty_downloaded_files":
                 empty_downloaded_files();
                 break;
+            case "set_pubkey":
+                set_pubkey();
+                break;
+            case "set_privkey":
+                set_privkey();
+                break;
         }
     }
 
     if (isset($_FILES['file0'])){
         send_files();
+    }
+
+    if (isset($_FILES['keyfile'])){
+        dl_key_file();
     }
 
     function connect(){
@@ -120,6 +130,38 @@
                 exec("rm ../Downloads/*");
             }
         }
+    }
+
+    function dl_key_file(){
+        $keyfile = $_FILES['keyfile'];
+
+        // Check for upload errors
+        if ($keyfile['error'] !== UPLOAD_ERR_OK) {
+            echo 'Upload error: ' . $keyfile['error'];
+        }
+
+        $dir = '../Downloads/';
+        if (!is_dir($dir)) {
+            exec("mkdir " . $dir);
+        }
+
+        move_uploaded_file($keyfile['tmp_name'], $dir . $keyfile['name']);
+
+        echo $dir . $keyfile['name'];
+    }
+
+    function set_pubkey(){
+        $pubfile = $_POST['file'];
+        $dir = '../Downloads/';
+        exec("chmod 600 " . $dir . $pubfile);
+        $_SESSION['pubfile'] = $dir . $pubfile;
+    }
+
+    function set_privkey(){
+        $privfile = $_POST['file'];
+        $dir = '../Downloads/';
+        exec("chmod 600 " . $dir . $privfile);
+        $_SESSION['privfile'] = $dir . $privfile;
     }
 
     function receive_file(){

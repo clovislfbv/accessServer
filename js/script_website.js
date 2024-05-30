@@ -1,4 +1,4 @@
-import { cd, resetSession, mkdir, rm, send_files, receive_file, empty_downloaded_files } from './helper.js';
+import { cd, resetSession, mkdir, rm, send_files, receive_file, empty_downloaded_files, dl_key_file, setPubKey, setPrivKey } from './helper.js';
 
 var $j = jQuery.noConflict();
 
@@ -20,7 +20,7 @@ $j(document).ready(function () {
         e.preventDefault();
         var folder = $j(this).text();
         cd(folder);
-        empty_downloaded_files();
+        //empty_downloaded_files();
         window.location.href = '../php/result.php';
     });
 
@@ -40,7 +40,17 @@ $j(document).ready(function () {
     $j("#form").submit(function (e) {
         e.preventDefault();
         resetSession();
-        $j("#form")[0].submit();
+        var id_choice = $j(".id_choice").val();
+        if (id_choice === "2") {
+            var file = $j("#public_file").prop("files");
+            console.log(file[0].name);
+            dl_key_file(file[0]);
+            setPubKey(file[0].name);
+            file = $j("#private_file").prop("files");
+            dl_key_file(file[0]);
+            setPrivKey(file[0].name);
+        }
+        this.submit();
     });
 
     $j(".create_folder").click(function (e) {
@@ -104,6 +114,7 @@ $j(document).ready(function () {
 
     $j(".send_files").click(function (e) {
         var files = $j("#myFile").prop("files");
+        console.log(files);
         send_files(files);
         window.location.href = '../php/result.php';
     });

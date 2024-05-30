@@ -45,18 +45,19 @@
                                     <div class="pubfile_zone">
                                         <label for="pubfile">Fichier de clé publique</label>
                                     </div>
-                                    <input type="file" name="pubfile" id="pubfile" accept=".pub">
+                                    <input type="file" name="pubfile" id="public_file" accept=".pub">
                                 </div>
                                 <div class="privfile">
                                     <div class="privfile_zone">
                                         <label for="privfile">Fichier de clé privée</label>
                                     </div>
-                                    <input type="file" name="privfile" id="privfile" accept=".pem">
+                                    <input type="file" name="privfile" id="private_file">
                                 </div>
                                 <div class="port">
                                     <label for="port">Port</label>
                                     <input type="port" name="port" id="port" placeholder="22">
                                 </div>
+                                <input type="hidden" name="id_choice" class="id_choice" value="1"></input>
                                 <input type="submit" class="submit_btn" value="Se connecter">
                             </form>
                         </div>

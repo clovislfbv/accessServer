@@ -2,19 +2,20 @@
     session_start();
     $host = $_POST['host'];
     $user = $_POST['user'];
-    $password = $_POST['password'];
     if ($_POST['port'] == "") {
         $port = 22;
     } else {
         $port = $_POST['port'];
     }
-
-    echo $password . " test";
+    $id_choice = $_POST['id_choice'];
+    if ($id_choice == 1) {
+        $password = $_POST['password'];
+        $_SESSION['password'] = $password;
+    }
 
     $_SESSION['host'] = $host;
-    $_SESSION['user'] = $user;
-    $_SESSION['password'] = $password;
-    $_SESSION['port'] = $port
+    $_SESSION['user'] = $user;  
+    $_SESSION['port'] = $port;
 ?>
 <!DOCTYPE html>
 <html lang="en">

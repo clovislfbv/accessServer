@@ -61,6 +61,7 @@ $j(document).ready(function () {
             $j("#privfile").prop('required', false);
 
             $j(".with_pubfile").prop('checked', false);
+            $j(".id_choice").val(1);
         } else {
             $j('#password').prop('disabled', true);
             $j('#password').prop('required', false);
@@ -72,6 +73,7 @@ $j(document).ready(function () {
             $j("#privfile").prop('required', true);
 
             $j(".with_pubfile").prop('checked', true);
+            $j(".id_choice").val(2);
         }
     });
 
@@ -87,6 +89,7 @@ $j(document).ready(function () {
             $j("#privfile").prop('required', true);
 
             $j(".with_password").prop('checked', false);
+            $j(".id_choice").val(2);
         } else {
             $j('#password').prop('disabled', false);
             $j('#password').prop('required', true);
@@ -98,6 +101,7 @@ $j(document).ready(function () {
             $j("#privfile").prop('required', false);
 
             $j(".with_password").prop('checked', true);
+            $j(".id_choice").val(1);
         }
     });
 });
