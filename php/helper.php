@@ -29,6 +29,9 @@
             case "set_privkey":
                 set_privkey();
                 break;
+            case "empty_keys_files":
+                empty_keys_files();
+                break;
         }
     }
 
@@ -43,12 +46,24 @@
     function connect(){
         $host = $_SESSION['host'];
         $user = $_SESSION['user'];
-        $password = $_SESSION['password'];
         $port = $_SESSION['port'];
 
         $connection = ssh2_connect($host, $port);
 
-        ssh2_auth_password($connection, $user, $password);
+        if (isset($_SESSION["password"])){
+            $password = $_SESSION['password'];
+            ssh2_auth_password($connection, $user, $password);
+        } else {
+            $pubfile = $_SESSION["pubfile"];
+            $privfile = $_SESSION["privfile"];
+
+            if (isset($_SESSION['password_key'])){
+                $password_key = $_SESSION['password_key'];
+                ssh2_auth_pubkey_file($connection, $user, $pubfile, $privfile, $password_key);
+            } else {
+                ssh2_auth_pubkey_file($connection, $user, $pubfile, $privfile);
+            }
+        }
 
         return $connection;
     }
@@ -62,13 +77,20 @@
     function reset_session(){
         if (isset($_SESSION['current'])){
             unset($_SESSION['current']);
+            unset($_SESSION['host']);
+            unset($_SESSION['user']);
+            unset($_SESSION['password']);
+            unset($_SESSION['port']);
+            unset($_SESSION['pubfile']);
+            unset($_SESSION['privfile']);
+            unset($_SESSION['password_key']);
         }
     }
 
     function make_dir(){
         $folder = $_POST["folder"];
         $current = $_SESSION['current'];
-        $command = 'cd ' . $current . ' && mkdir ' . $folder;
+        $command = 'cd ' . $current . ' && mkdir "' . $folder . "'";
         $connection = connect();
         $stream = ssh2_exec($connection, $command);
         stream_set_blocking($stream, true);
@@ -140,7 +162,7 @@
             echo 'Upload error: ' . $keyfile['error'];
         }
 
-        $dir = '../Downloads/';
+        $dir = '../Keys/';
         if (!is_dir($dir)) {
             exec("mkdir " . $dir);
         }
@@ -152,15 +174,15 @@
 
     function set_pubkey(){
         $pubfile = $_POST['file'];
-        $dir = '../Downloads/';
-        exec("chmod 600 " . $dir . $pubfile);
+        $dir = '../Keys/';
+        //exec("chmod 600 " . $dir . $pubfile);
         $_SESSION['pubfile'] = $dir . $pubfile;
     }
 
     function set_privkey(){
         $privfile = $_POST['file'];
-        $dir = '../Downloads/';
-        exec("chmod 600 " . $dir . $privfile);
+        $dir = '../Keys/';
+        //exec("chmod 600 " . $dir . $privfile);
         $_SESSION['privfile'] = $dir . $privfile;
     }
 
@@ -190,4 +212,8 @@
 
     function empty_downloaded_files(){
         exec("rm -rf ../remoteFiles/");
+    }
+
+    function empty_keys_files(){
+        exec("rm ../Keys/*");
     }

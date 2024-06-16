@@ -13,7 +13,12 @@
     } else {
         $pubfile = $_SESSION['pubfile'];
         $privfile = $_SESSION['privfile'];
-        echo $pubfile;
-        ssh2_auth_pubkey_file($connection, $user, $pubfile, $privfile);
+        
+        if (isset($_SESSION['password_key'])){
+            $password_key = $_SESSION['password_key'];
+            ssh2_auth_pubkey_file($connection, $user, $pubfile, $privfile, $password_key);
+        } else {
+            ssh2_auth_pubkey_file($connection, $user, $pubfile, $privfile);
+        }
     }
 ?>

@@ -11,6 +11,9 @@
     if ($id_choice == 1) {
         $password = $_POST['password'];
         $_SESSION['password'] = $password;
+    } else if (isset($_POST["password_key"])){
+        $password_key = $_POST["password_key"];
+        $_SESSION['password_key'] = $password_key;
     }
 
     $_SESSION['host'] = $host;

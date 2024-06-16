@@ -1,6 +1,9 @@
 var $j = jQuery.noConflict();
 
 export function cd(folder) {
+    /*** 
+     * commande pour changer de dossier
+     * ***/
     $j.ajax({
         url: '../php/helper.php',
         type: 'POST',
@@ -16,9 +19,13 @@ export function cd(folder) {
 }
 
 export function resetSession() {
+    /*** 
+     * commande pour reset la session en cours
+     * ***/
     $j.ajax({
         url: '../php/helper.php',
         type: 'POST',
+        async: false,
         data: {
             action: 'reset_session'
         },
@@ -26,6 +33,9 @@ export function resetSession() {
 }
 
 export function mkdir(folder) {
+    /*** 
+     * commande pour créer un dossier
+     * ***/
     $j.ajax({
         url: '../php/helper.php',
         type: 'POST',
@@ -38,6 +48,9 @@ export function mkdir(folder) {
 }
 
 export function rm(folder) {
+    /*** 
+     * commande pour supprimer un fichier
+     * ***/
     $j.ajax({
         url: '../php/helper.php',
         type: 'POST',
@@ -56,6 +69,9 @@ export function rm(folder) {
 }
 
 export function send_files(files) {
+    /***
+     * Commande pour envoyer des fichiers au serveur distant depuis le client
+     ***/
     var formData = new FormData();
 
     for (var i = 0; i < files.length; i++) {
@@ -82,6 +98,9 @@ export function send_files(files) {
 }
 
 export function dl_key_file(file) {
+    /***
+     * Commande pour télécharger les clés ssh depuis le client vers le serveur web pour l'authentification par clé ssh 
+     ***/
     var formData = new FormData();
     formData.append('keyfile', file);
     console.log(file);
@@ -105,6 +124,9 @@ export function dl_key_file(file) {
 }
 
 export function setPubKey(file) {
+    /***
+     * commande pour stocker le path vers la clé publique téléchargée en session
+     ***/
     $j.ajax({
         url: '../php/helper.php',
         type: 'POST',
@@ -123,11 +145,14 @@ export function setPubKey(file) {
 }
 
 export function setPrivKey(file) {
+    /***
+     * commande pour stocker le path vers la clé privée téléchargée en session
+     ***/
     $j.ajax({
         url: '../php/helper.php',
         type: 'POST',
         data: {
-            action: 'set-privkey',
+            action: 'set_privkey',
             file: file
         },
         async: false,
@@ -141,6 +166,10 @@ export function setPrivKey(file) {
 }
 
 export function receive_file(file) {
+    /***
+     * commande pour télécharger un fichier depuis le serveur distant vers le client
+     * Précision : obligé d'attendre la fin du téléchargement du fichier pour afficher le fichier
+     ***/
     $j.ajax({
         url: '../php/helper.php',
         type: 'POST',
@@ -159,12 +188,52 @@ export function receive_file(file) {
 
 }
 
+export function receive_file_async(file) {
+    /***
+     * commande pour télécharger un fichier depuis le serveur distant vers le client
+     * Précision : pas besoin d'attendre la fin du télécargement pour faire autre chose
+     ***/
+    $j.ajax({
+        url: '../php/helper.php',
+        type: 'POST',
+        data: {
+            action: 'receive_file',
+            file: file
+        },
+        success: function (data) {
+            console.log(data);
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
+}
+
 export function empty_downloaded_files() {
+    /***
+     * commande pour vider le dossier des fichiers téléchargés
+     ***/
     $j.ajax({
         url: '../php/helper.php',
         type: 'POST',
         data: {
             action: 'empty_downloaded_files'
+        },
+        success: function (data) {
+            console.log(data);
+        },
+    });
+}
+
+export function empty_keys_files() {
+    /***
+     * commande pour vider le dossier des clés ssh
+     ***/
+    $j.ajax({
+        url: '../php/helper.php',
+        type: 'POST',
+        data: {
+            action: 'empty_keys_files'
         },
         success: function (data) {
             console.log(data);

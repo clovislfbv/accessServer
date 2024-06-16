@@ -17,7 +17,7 @@
         <div class="left"></div>
         <div class="center">
             <h1 class="name">accessServer</h1>
-            <div class="card">
+            <div class="card menu">
                 <div class="card-body">
                     <h3 class="description">Connectez-vous à votre serveur distant</h3>
                     <div class="component">
@@ -45,13 +45,20 @@
                                     <div class="pubfile_zone">
                                         <label for="pubfile">Fichier de clé publique</label>
                                     </div>
-                                    <input type="file" name="pubfile" id="public_file" accept=".pub">
+                                    <input type="file" name="pubfile" id="pubfile" accept=".pub">
                                 </div>
                                 <div class="privfile">
                                     <div class="privfile_zone">
                                         <label for="privfile">Fichier de clé privée</label>
                                     </div>
-                                    <input type="file" name="privfile" id="private_file">
+                                    <input type="file" name="privfile" id="privfile">
+                                </div>
+                                <div class="password_key">
+                                    <div class="password_key_zone">
+                                        <input type="checkbox" name="with_password_key" id="with_password_key">
+                                        <label for="password_key">Mot de passe de la clé privée</label>
+                                    </div>
+                                    <input type="password" name="password_key" id="password_key">
                                 </div>
                                 <div class="port">
                                     <label for="port">Port</label>

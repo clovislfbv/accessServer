@@ -31,7 +31,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 15%;
+    height: 10%;
     width: 100%;
 }
 
@@ -39,7 +39,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 85%;
+    height: 90%;
     width: 100%;
 }
 
@@ -78,9 +78,17 @@ form {
     padding-bottom: 2.5vh;
 }
 
+.pubfile, .privfile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 5%;
+}
+
 .password_zone,
 .pubfile_zone,
-.privfile_zone {
+.privfile_zone, 
+.password_key {
     display: flex;
     width: 30vw;
     flex-direction: row;
@@ -94,7 +102,7 @@ form {
 }
 
 .with_password {
-    margin-top: 5vh;
+    margin-top: -1vh;
 }
 
 .with_pubfile {
@@ -115,4 +123,14 @@ form {
 .center_card {
     height: 100%;
     width: 80%;
+}
+
+.password_key {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 5vh;
+}
+
+.menu {
+    height: 80%;
 }

@@ -1,4 +1,4 @@
-import { cd, resetSession, mkdir, rm, send_files, receive_file, empty_downloaded_files, dl_key_file, setPubKey, setPrivKey } from './helper.js';
+import { cd, resetSession, mkdir, rm, send_files, receive_file, empty_downloaded_files, dl_key_file, setPubKey, setPrivKey, empty_keys_files } from './helper.js';
 
 var $j = jQuery.noConflict();
 
@@ -20,7 +20,7 @@ $j(document).ready(function () {
         e.preventDefault();
         var folder = $j(this).text();
         cd(folder);
-        //empty_downloaded_files();
+        empty_downloaded_files();
         window.location.href = '../php/result.php';
     });
 
@@ -42,11 +42,11 @@ $j(document).ready(function () {
         resetSession();
         var id_choice = $j(".id_choice").val();
         if (id_choice === "2") {
-            var file = $j("#public_file").prop("files");
+            var file = $j("#pubfile").prop("files");
             console.log(file[0].name);
             dl_key_file(file[0]);
             setPubKey(file[0].name);
-            file = $j("#private_file").prop("files");
+            file = $j("#privfile").prop("files");
             dl_key_file(file[0]);
             setPrivKey(file[0].name);
         }
@@ -132,26 +132,29 @@ $j(document).ready(function () {
         receive_file(filename);
         console.log("received file");
         var directory = "../remoteFiles/";
-        $j("#previewModal").find(".modal-content").resizable({
-            handles: 'n, e, s, w, ne, sw, se, nw',
-        });
-        $j("#previewModal").modal("show");
-        $j("#previewTitle").text(filename);
         var filePath = directory + filename;
 
-        $j("#previewModal").find(".modal-content").css({ "height": "70vh" })
-        $j(".previewBody").css({ "height": "65vh" })
+        window.location.href = filePath;
 
-        var fileExtension = filename.split('.').pop().toLowerCase();
-        var imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'];
+        // $j("#previewModal").find(".modal-content").resizable({
+        //     handles: 'n, e, s, w, ne, sw, se, nw',
+        // });
+        // $j("#previewModal").modal("show");
+        // $j("#previewTitle").text(filename);
 
-        if (imageExtensions.includes(fileExtension)) {
-            $j(".previewBody").html("<object data='" + filePath + "' type='image/" + fileExtension + "' allowfullscreen></object>");
-        } else if (fileExtension === 'pdf') {
-            $j(".previewBody").html("<object data='" + filePath + "' type='application/pdf' width='100%' height='100%' allowfullscreen></object>");
-        } else {
-            $j(".previewBody").html("<object data='" + filePath + "' width='100%' height='100%'><param name='allowFullScreen' value='true'></param></object>");
-        }
+        // $j("#previewModal").find(".modal-content").css({ "height": "70vh" })
+        // $j(".previewBody").css({ "height": "65vh" })
+
+        // var fileExtension = filename.split('.').pop().toLowerCase();
+        // var imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'];
+
+        // if (imageExtensions.includes(fileExtension)) {
+        //     $j(".previewBody").html("<object data='" + filePath + "' type='image/" + fileExtension + "' allowfullscreen></object>");
+        // } else if (fileExtension === 'pdf') {
+        //     $j(".previewBody").html("<object data='" + filePath + "' type='application/pdf' width='100%' height='100%' allowfullscreen></object>");
+        // } else {
+        //     $j(".previewBody").html("<object data='" + filePath + "' width='100%' height='100%'><param name='allowFullScreen' value='true'></param></object>");
+        // }
     });
 
     $j("#previewModal").on('hidden.bs.modal', function () {
@@ -160,8 +163,9 @@ $j(document).ready(function () {
         $j(".previewBody").html("");
     });
 
-    // window.onbeforeunload = function (event) {
-    //     console.log("onbeforeunload");
-    //     empty_downloaded_files();
-    // };
+    window.onbeforeunload = function (event) {
+        console.log("onbeforeunload");
+        //empty_downloaded_files();
+        //empty_keys_files();
+    };
 });
