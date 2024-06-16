@@ -39,6 +39,10 @@
                 $_SESSION['current'] = "./";
             }
 
+            if (isset($_FILES)){
+                unset($_FILES);
+            }
+
             $command = 'cd ' . $_SESSION['current'] . ' && ls -a';
             $stream = ssh2_exec($connection, $command);
             stream_set_blocking($stream, true);

@@ -90,7 +90,7 @@
     function make_dir(){
         $folder = $_POST["folder"];
         $current = $_SESSION['current'];
-        $command = 'cd ' . $current . ' && mkdir "' . $folder . "'";
+        $command = 'cd ' . $current . ' && mkdir "' . $folder . '"';
         $connection = connect();
         $stream = ssh2_exec($connection, $command);
         stream_set_blocking($stream, true);
