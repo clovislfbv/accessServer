@@ -151,6 +151,8 @@
                 ssh2_scp_send($connection, $dir . $file, $_SESSION['current'] . $file, 0644);
                 exec("rm ../Downloads/*");
             }
+
+            unset($_FILES['file' . $i]);
         }
     }
 
