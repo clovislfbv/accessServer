@@ -71,7 +71,7 @@
     function cd(){
         $folder = $_POST["folder"];
         $current = $_SESSION['current'];
-        $_SESSION['current'] = $current . $folder . "/";
+        $_SESSION['current'] = $current . escapeshellarg($folder) . "/";
     }
 
     function reset_session(){
@@ -140,7 +140,8 @@
                 exec("mkdir " . $dir);
             }
 
-            move_uploaded_file($file['tmp_name'], $dir . $file['name']);
+            $fileWithoutSpaces = str_replace(' ', '_', $file['name']);
+            move_uploaded_file($file['tmp_name'], $dir . $fileWithoutSpaces);
 
             $files = scandir($dir);
 
@@ -149,7 +150,6 @@
                     continue;  // Skip current directory and parent directory
                 }
                 ssh2_scp_send($connection, $dir . $file, $_SESSION['current'] . $file, 0644);
-                exec("rm ../Downloads/*");
             }
 
             unset($_FILES['file' . $i]);
@@ -201,7 +201,7 @@
         }
 
         if (!file_exists($localFile)) {
-            $stream = ssh2_exec($connection, '[ -d ' . $remoteFile . ' ] && echo "directory" || echo "file"');
+            $stream = ssh2_exec($connection, '[ -d "' . $remoteFile . '" ] && echo "directory" || echo "file"');
             stream_set_blocking($stream, true);
             $stream_out = ssh2_fetch_stream($stream, SSH2_STREAM_STDIO);
             $output = stream_get_contents($stream_out);
