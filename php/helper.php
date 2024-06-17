@@ -70,8 +70,13 @@
 
     function cd(){
         $folder = $_POST["folder"];
+        for ($i = 0; $i < strlen($folder); $i++){
+            if ($folder[$i] == " "){
+                $folder = escapeshellarg($folder);
+            }
+        }
         $current = $_SESSION['current'];
-        $_SESSION['current'] = $current . escapeshellarg($folder) . "/";
+        $_SESSION['current'] = $current . $folder . "/";
     }
 
     function reset_session(){
