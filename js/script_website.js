@@ -134,19 +134,24 @@ $j(document).ready(function () {
         var directory = "../remoteFiles/";
         var filePath = directory + filename;
 
-        window.location.href = filePath;
+        var fileExtension = filename.split('.').pop().toLowerCase();
+        var imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'];
 
-        // $j("#previewModal").find(".modal-content").resizable({
-        //     handles: 'n, e, s, w, ne, sw, se, nw',
-        // });
-        // $j("#previewModal").modal("show");
-        // $j("#previewTitle").text(filename);
+        if (imageExtensions.includes(fileExtension)) {
+            $j("#previewModal").find(".modal-content").resizable({
+                handles: 'n, e, s, w, ne, sw, se, nw',
+            });
+            $j("#previewModal").modal("show");
+            $j("#previewTitle").text(filename);
+            $j(".previewBody").html("<img src='" + filePath + "' class='img-fluid' alt='" + filename + "'>");
+            $j(".modal-backdrop").removeClass("show");
+            $j(".modal-backdrop").addClass("d-none");
+        } else {
+            window.location.href = filePath;
+        };
 
         // $j("#previewModal").find(".modal-content").css({ "height": "70vh" })
         // $j(".previewBody").css({ "height": "65vh" })
-
-        // var fileExtension = filename.split('.').pop().toLowerCase();
-        // var imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'];
 
         // if (imageExtensions.includes(fileExtension)) {
         //     $j(".previewBody").html("<object data='" + filePath + "' type='image/" + fileExtension + "' allowfullscreen></object>");
