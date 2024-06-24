@@ -32,6 +32,9 @@
             case "empty_keys_files":
                 empty_keys_files();
                 break;
+            case "ls_extensions":
+                ls_extensions();
+                break;
         }
     }
 
@@ -215,6 +218,23 @@
                 ssh2_scp_recv($connection, $remoteFile, $localFile);
             }
         }
+    }
+
+    function ls_extensions(){
+        $extensions = $_POST["extensions"];
+        $current = $_SESSION['current'];
+
+        $value = "";
+
+        for ($i = 0; $i < count($extensions); $i++){
+            $value .= "*." . $extensions[$i] . " ";
+        }
+        $command = 'cd ' . $current . ' && ls ' . $value;
+        $stream = ssh2_exec(connect(), $command);
+        stream_set_blocking($stream, true);
+        $stream_out = ssh2_fetch_stream($stream, SSH2_STREAM_STDIO);
+        $output = stream_get_contents($stream_out);
+        echo json_encode($output);
     }
 
     function empty_downloaded_files(){

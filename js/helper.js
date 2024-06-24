@@ -209,6 +209,29 @@ export function receive_file_async(file) {
     });
 }
 
+export function ls_extensions(extensions) {
+    /***
+     * commande pour lister les extensions des fichiers provenant de la liste d'extensions
+     ***/
+    let output;
+    $j.ajax({
+        url: '../php/helper.php',
+        type: 'POST',
+        data: {
+            action: 'ls_extensions',
+            extensions: extensions
+        },
+        async: false,
+        success: function (data) {
+            output = JSON.parse(data);
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
+    return output;
+}
+
 export function empty_downloaded_files() {
     /***
      * commande pour vider le dossier des fichiers téléchargés

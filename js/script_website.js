@@ -1,8 +1,9 @@
-import { cd, resetSession, mkdir, rm, send_files, receive_file, empty_downloaded_files, dl_key_file, setPubKey, setPrivKey, empty_keys_files } from './helper.js';
+import { cd, resetSession, mkdir, rm, send_files, receive_file, empty_downloaded_files, dl_key_file, setPubKey, setPrivKey, empty_keys_files, ls_extensions } from './helper.js';
 
 var $j = jQuery.noConflict();
 
 $j(document).ready(function () {
+    var images;
     if ($j("#confirmModal").length) {
         console.log('confirmModal');
         $j("#confirmModal").modal("hide");
@@ -146,6 +147,38 @@ $j(document).ready(function () {
             $j(".previewBody").html("<img src='" + filePath + "' class='img-fluid' alt='" + filename + "'>");
             $j(".modal-backdrop").removeClass("show");
             $j(".modal-backdrop").addClass("d-none");
+
+            images = ls_extensions(imageExtensions);
+            images = images.split('\n');
+            images.pop();
+
+            $j("#previewModal").keydown(function (e) {
+                if (e.keyCode === 37) {
+                    console.log("left");
+                    var index = images.indexOf(filename);
+                    if (index === 0) {
+                        filename = images[images.length - 1];
+                    } else {
+                        filename = images[index - 1];
+                    }
+                    filePath = directory + filename;
+                    receive_file(filename);
+                    $j("#previewTitle").text(filename);
+                    $j(".previewBody").html("<img src='" + filePath + "' class='img-fluid' alt='" + filename + "'>");
+                } else if (e.keyCode === 39) {
+                    console.log("right");
+                    var index = images.indexOf(filename);
+                    if (index === images.length - 1) {
+                        filename = images[0];
+                    } else {
+                        filename = images[index + 1];
+                    }
+                    filePath = directory + filename;
+                    receive_file(filename);
+                    $j("#previewTitle").text(filename);
+                    $j(".previewBody").html("<img src='" + filePath + "' class='img-fluid' alt='" + filename + "'>");
+                }
+            });
         } else {
             window.location.href = filePath;
         };
@@ -173,4 +206,6 @@ $j(document).ready(function () {
         //empty_downloaded_files();
         //empty_keys_files();
     };
+
+
 });
