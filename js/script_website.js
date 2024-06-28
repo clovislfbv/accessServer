@@ -1,8 +1,56 @@
-import { cd, resetSession, mkdir, rm, send_files, receive_file, empty_downloaded_files, dl_key_file, setPubKey, setPrivKey, empty_keys_files, ls_extensions } from './helper.js';
+import { cd, resetSession, mkdir, rm, send_files, receive_file, receive_file_async, empty_downloaded_files, dl_key_file, setPubKey, setPrivKey, empty_keys_files, ls, ls_extensions } from './helper.js';
 
 var $j = jQuery.noConflict();
 
+async function checkFileExists(filePath) {
+    try {
+        const response = await fetch(filePath, { method: 'HEAD' });
+        if (response.ok) {
+            //console.log('File exists:', filePath);
+            return true;
+        } else {
+            //console.log('File does not exist:', filePath);
+            return false;
+        }
+    } catch (error) {
+        console.error('Error checking file:', error);
+        return false;
+    }
+    return false;
+}
+
+function downloadNeighbourFile(files, index) {
+    if (index > 0) {
+        checkFileExists("../remoteFiles/" + files[index - 1]).then((exists) => {
+            if (!exists) {
+                receive_file_async(files[index - 1]);
+            }
+        });
+    }
+
+    if (index < files.length - 1) {
+        checkFileExists("../remoteFiles/" + files[index + 1]).then((exists) => {
+            if (!exists) {
+                receive_file_async(files[index + 1]);
+            }
+        });
+    }
+}
+
+
 $j(document).ready(function () {
+    // if (window.location.pathname.endsWith('result.php')) {
+    //     var current_files = ls();
+    //     current_files = current_files.split('\n');
+    //     current_files.pop();
+    //     for (var i = 0; i < current_files.length / 2; i++) {
+    //         if ($j("#" + i).hasClass("file")) {
+    //             console.log(current_files[i]);
+    //             receive_file_async(current_files[i]);
+    //         }
+    //     }
+    // }
+
     var images;
     if ($j("#confirmModal").length) {
         console.log('confirmModal');
@@ -128,13 +176,30 @@ $j(document).ready(function () {
         $j(".bi-arrow-left-circle").removeClass("d-none");
         $j(".bi-arrow-right-circle").removeClass("d-none");
         var file_id = $j(this).attr('id').replace('preview_', '');
+        var file_id_int = parseInt(file_id, 10);
         var filename = $j("#" + file_id).text();
-        console.log(filename);
-        receive_file(filename);
-        console.log("received file");
         var directory = "../remoteFiles/";
-        var filePath = directory + filename;
+        //console.log(filename);
 
+        var filePath = directory + filename;
+        checkFileExists(filePath).then((exists) => {
+            if (!exists) {
+                receive_file(filename);
+                //console.log("received file");
+                processFile(filePath, filename, directory);
+            } else {
+                processFile(filePath, filename, directory);
+            }
+        });
+    });
+
+    function processFile(filePath, filename, directory) {
+        // for (var i = current_files.length / 2; i < current_files.length; i++) {
+        //     if ($j("#" + i).hasClass("file")) {
+        //         console.log(current_files[i]);
+        //         receive_file_async(current_files[i]);
+        //     }
+        // }
         var fileExtension = filename.split('.').pop().toLowerCase();
         var imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'];
 
@@ -152,31 +217,46 @@ $j(document).ready(function () {
             images = images.split('\n');
             images.pop();
 
+            var index = images.indexOf(filename);
+            downloadNeighbourFile(images, index);
+
             $j("#previewModal").keydown(function (e) {
                 if (e.keyCode === 37) {
-                    console.log("left");
+                    //console.log("left");
                     var index = images.indexOf(filename);
                     if (index === 0) {
-                        filename = images[images.length - 1];
+                        filename = images[0];
                     } else {
+                        downloadNeighbourFile(images, index - 1);
+
                         filename = images[index - 1];
+                        filePath = directory + filename;
+                        // checkFileExists(filePath).then((exists) => {
+                        //     if (!exists) {
+                        //         receive_file(filename);
+                        //     }
+                        // });
                     }
-                    filePath = directory + filename;
-                    receive_file(filename);
                     $j("#previewTitle").text(filename);
                     $j(".previewBody").html("<img src='" + filePath + "' class='img-fluid' alt='" + filename + "'>");
                 } else if (e.keyCode === 39) {
-                    console.log("right");
+                    //console.log("right");
                     var index = images.indexOf(filename);
                     if (index === images.length - 1) {
-                        filename = images[0];
+                        filename = images[images.length - 1];
                     } else {
                         filename = images[index + 1];
+                        downloadNeighbourFile(images, index + 1);
+
+                        filePath = directory + filename;
+                        // checkFileExists(filePath).then((exists) => {
+                        //     if (!exists) {
+                        //         receive_file(filename);
+                        //     }
+                        // });
+                        $j("#previewTitle").text(filename);
+                        $j(".previewBody").html("<img src='" + filePath + "' class='img-fluid' alt='" + filename + "'>");
                     }
-                    filePath = directory + filename;
-                    receive_file(filename);
-                    $j("#previewTitle").text(filename);
-                    $j(".previewBody").html("<img src='" + filePath + "' class='img-fluid' alt='" + filename + "'>");
                 }
             });
         } else {
@@ -193,7 +273,7 @@ $j(document).ready(function () {
         // } else {
         //     $j(".previewBody").html("<object data='" + filePath + "' width='100%' height='100%'><param name='allowFullScreen' value='true'></param></object>");
         // }
-    });
+    };
 
     $j("#previewModal").on('hidden.bs.modal', function () {
         $j(".bi-arrow-left-circle").addClass("d-none");

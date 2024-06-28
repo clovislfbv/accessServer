@@ -178,9 +178,6 @@ export function receive_file(file) {
             file: file
         },
         async: false,
-        success: function (data) {
-            console.log(data);
-        },
         error: function (err) {
             console.log(err);
         }
@@ -200,13 +197,29 @@ export function receive_file_async(file) {
             action: 'receive_file',
             file: file
         },
+    });
+}
+
+export function ls() {
+    /***
+     * commande pour lister les fichiers du dossier courant
+     ***/
+    let output;
+    $j.ajax({
+        url: '../php/helper.php',
+        type: 'POST',
+        data: {
+            action: 'ls'
+        },
+        async: false,
         success: function (data) {
-            console.log(data);
+            output = JSON.parse(data);
         },
         error: function (err) {
             console.log(err);
         }
     });
+    return output;
 }
 
 export function ls_extensions(extensions) {
