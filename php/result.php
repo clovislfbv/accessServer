@@ -64,9 +64,30 @@
                     $newString = substr_replace($outputArray[$i], "<a id='" . $i-1 . "' class='folder' href='result.php'>", $index, 0);
                     echo "<img class='img' src='../assets/back.gif' alt='back'><h3>" . $newString . "<br></h3></a>";
                 } else if (strlen($outputArray[$i]) > 0 && $outputArray[$i][0] == 'd') {
+                    $git = 0;
                     $index = get_start_index($folders[$i-1], $outputArray[$i]);
                     $newString = substr_replace($outputArray[$i], "<a id='" . $i-1 . "' class='folder' href='result.php'>", $index, 0);
                     echo "<img class='img' src='../assets/folder.gif' alt='folder'><h3>" . $newString . "<br></h3></a>";
+                    
+                    $stream = ssh2_exec($connection, 'cd ' . $_SESSION['current'] . $folders[$i-1] . '&& ls -a');
+                    stream_set_blocking($stream, true);
+                    $stream_out = ssh2_fetch_stream($stream, SSH2_STREAM_STDIO);
+                    $new_output = stream_get_contents($stream_out);
+
+                    $newOutputArray = explode("\n", $new_output);
+
+                    for ($j = 0; $j < count($newOutputArray); $j++) {
+                        if ($newOutputArray[$j] == ".git")
+                        {
+                            $git = 1;
+                        }
+                    }
+
+                    if ($git == 1)
+                    {
+                            print_r("git repo found");
+                    }
+                    
                 } else if (count($outputArray) - 1 != $i){
                     $index = get_start_index($folders[$i-1], $outputArray[$i]);
                     $newString = substr_replace($outputArray[$i], "<a id='" . $i-1 . "' class='file' href='result.php'>", $index, 0);
