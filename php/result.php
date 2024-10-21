@@ -6,12 +6,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
     <link rel="stylesheet" type="text/css" href="../css/result.css">
     <script src="../js/jquery.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="../js/script_website.js" type="module"></script>
     <title>Document</title>
@@ -111,8 +111,7 @@
             <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title text-primary">Are you sure about that ?</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body text-primary" id="modal-body">
@@ -129,16 +128,12 @@
     <div class="modal" id="previewModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-primary" id="previewTitle"></h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body text-primary previewBody" id="modal-body"></div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
+            <div class="modal-header">
+                <h5 class="modal-title text-primary" id="previewTitle"></h5>
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-primary previewBody" id="modal-body"></div>
             </div>
         </div>
     </div>
