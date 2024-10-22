@@ -1,4 +1,4 @@
-import { cd, resetSession, mkdir, rm, send_files, receive_file, receive_file_async, empty_downloaded_files, dl_key_file, setPubKey, setPrivKey, empty_keys_files, ls, ls_extensions } from './helper.js';
+import { cd, resetSession, mkdir, rm, send_files, receive_file, receive_file_async, empty_downloaded_files, dl_key_file, setPubKey, setPrivKey, empty_keys_files, ls, ls_extensions, git_pull } from './helper.js';
 
 var $j = jQuery.noConflict();
 
@@ -55,6 +55,11 @@ $j(document).ready(function () {
     if ($j("#confirmModal").length) {
         console.log('confirmModal');
         $j("#confirmModal").modal("hide");
+    }
+
+    if ($j("#outputGitModal").length) {
+        console.log('outputGitModal');
+        $j("#outputGitModal").modal("hide");
     }
 
     if ($j("#previewModal").length) {
@@ -129,6 +134,19 @@ $j(document).ready(function () {
         rm(folder);
         window.location.href = '../php/result.php';
     });
+
+    var git_id
+    $j(".git_pull").click(function (e) {
+        git_id = $j(this).attr('id');
+        console.log(git_id);
+        var git_pull_id = git_id.replace('pull_', '');
+        var folder = $j("#" + git_pull_id).text();
+        console.log(folder);
+        var output = git_pull(folder);
+        $j(".git-modal-body").html("<p>" + output + "</p>");
+        $j("#outputGitModal").modal("show");
+    });
+
 
     $j("#drop_zone").on("dragover", function (e) {
         e.preventDefault();

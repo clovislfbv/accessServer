@@ -84,6 +84,8 @@
                         }
                     }
 
+                    echo "<div class='special_icons'>";
+
                     if ($git == 1 && $folders[$i-1] != ".")
                     {
                         echo "<img class='icon git_pull' id='pull_" . $i-1 . "' src='../assets/git-pull-request-icon.png' alt='git-pull-request-icon'>";
@@ -101,7 +103,7 @@
                 if ($i > 2 && count($outputArray) - 1 != $i){
                     echo "<img class='icon poubelle' id='del_" . $i-1 . "' src='../assets/bin.png' alt='bin-logo'></div>";
                 }
-                echo "</div>";
+                echo "</div></div>";
             }
         ?>
     <div class="new_folder float-left">
@@ -122,6 +124,21 @@
             </div>
             <div class="modal-footer text-primary">
                 <button type="submit" class="btn btn-primary" id="confirm">Confirm</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="outputGitModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary">Git pull output</h5>
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-primary git-modal-body" id="modal-body"></div>
+            <div class="modal-footer text-primary">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
             </div>

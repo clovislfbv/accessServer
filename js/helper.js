@@ -245,6 +245,30 @@ export function ls_extensions(extensions) {
     return output;
 }
 
+export function git_pull(folder) {
+    /***
+     * commande pour faire un git pull dans un repo git
+     ***/
+    var output;
+    $j.ajax({
+        url: '../php/helper.php',
+        type: 'POST',
+        data: {
+            action: 'git_pull',
+            folder: folder,
+        },
+        async: false,
+        success: function (data) {
+            output = data;
+        },
+        error: function (err) {
+            output = err;
+        }
+    });
+
+    return output;
+}
+
 export function empty_downloaded_files() {
     /***
      * commande pour vider le dossier des fichiers téléchargés

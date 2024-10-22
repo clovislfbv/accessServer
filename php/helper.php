@@ -29,14 +29,11 @@
             case "set_privkey":
                 set_privkey();
                 break;
+            case "git_pull":
+                git_pull();
+                break;
             case "empty_keys_files":
                 empty_keys_files();
-                break;
-            case "ls":
-                ls();
-                break;
-            case "ls_extensions":
-                ls_extensions();
                 break;
         }
     }
@@ -142,8 +139,17 @@
                 echo 'Upload error: ' . $file['error'];
                 continue;
             }
+
+            if (!function_exists('ssh2_connect')) {
+                die('SSH2 extension is not installed');
+            }
             
             $connection = connect();
+
+            $sftp = ssh2_sftp($connection);
+            if (!$sftp) {
+                die('SFTP session creation failed');
+            }
 
             // Move the uploaded file to a directory on your server
             $dir = '../Downloads/';
@@ -152,7 +158,8 @@
             }
 
             $fileWithoutSpaces = str_replace(' ', '_', $file['name']);
-            move_uploaded_file($file['tmp_name'], $dir . $fileWithoutSpaces);
+            $fileWithoutDashes = str_replace('-', '_', $fileWithoutSpaces);
+            move_uploaded_file($file['tmp_name'], $dir . $fileWithoutDashes);
 
             $files = scandir($dir);
 
@@ -160,7 +167,30 @@
                 if ($file === '.' || $file === '..') {
                     continue;  // Skip current directory and parent directory
                 }
-                ssh2_scp_send($connection, $dir . $file, $_SESSION['current'] . $file, 0644);
+                //ssh2_scp_send($connection, $dir . $file, $_SESSION['current'] . $file, 0644);
+                $localFile = $dir . $file;
+                $remoteFile = $_SESSION['current'] . $file;
+                $current = $_SESSION['current'];
+                
+                $command = "cd " . $current . " && touch '" . $file . "'";
+                $stream2 = ssh2_exec($connection, $command);
+
+                $sftpStream = fopen("ssh2.sftp://" . intval($sftp) . $remoteFile, 'w');
+
+                if (!$sftpStream) {
+                    die("Could not open remote file: $remoteFile");
+                }
+
+                $data_to_send = file_get_contents($localFile);
+                if ($data_to_send === false) {
+                    die("Could not open local file: $localFile");
+                }
+
+                if (fwrite($sftpStream, $data_to_send) === false) {
+                    die("Could not send data from file: $localFile");
+                }
+
+                fclose($sftpStream);
             }
 
             unset($_FILES['file' . $i]);
@@ -221,35 +251,39 @@
                 ssh2_scp_recv($connection, $remoteFile, $localFile);
             }
         }
-
-        echo $localFile;
     }
 
-    function ls(){
+    function git_pull(){
+        $connection = connect();
+        $folder = $_POST["folder"];
         $current = $_SESSION['current'];
-        $command = 'cd ' . $current . ' && ls -a';
-        $stream = ssh2_exec(connect(), $command);
+        $command = 'cd ' . $current . $folder . ' && git config --get remote.origin.url';
+        $stream = ssh2_exec($connection, $command);
         stream_set_blocking($stream, true);
         $stream_out = ssh2_fetch_stream($stream, SSH2_STREAM_STDIO);
         $output = stream_get_contents($stream_out);
-        echo json_encode($output);
-    }
 
-    function ls_extensions(){
-        $extensions = $_POST["extensions"];
-        $current = $_SESSION['current'];
+        $output = str_replace("git@", "https://", $output);
+        $output = str_replace(".com:", ".com/", $output);
+        
+        $command = 'cd ' . $current . $folder . ' && git pull ' . $output;
+        $stream = ssh2_exec($connection, $command);
+        stream_set_blocking($stream, true);
+        $stream_out = ssh2_fetch_stream($stream, SSH2_STREAM_STDIO);
+        $output = stream_get_contents($stream_out);
 
-        $value = "";
-
-        for ($i = 0; $i < count($extensions); $i++){
-            $value .= "*." . $extensions[$i] . " ";
+        if ($output)
+        {
+            echo $output;
         }
-        $command = 'cd ' . $current . ' && ls ' . $value;
-        $stream = ssh2_exec(connect(), $command);
-        stream_set_blocking($stream, true);
-        $stream_out = ssh2_fetch_stream($stream, SSH2_STREAM_STDIO);
-        $output = stream_get_contents($stream_out);
-        echo json_encode($output);
+
+        $stream_in = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
+        $output = stream_get_contents($stream_in);
+
+        if ($output)
+        {
+            echo $output;
+        }
     }
 
     function empty_downloaded_files(){
