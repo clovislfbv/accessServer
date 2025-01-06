@@ -131,25 +131,18 @@
 
     function send_files(){
         exec("rm ../Downloads/*");
+        $response = array('success' => false, 'error' => '');
+
         for ($i = 0; isset($_FILES['file' . $i]); $i++) {
             $file = $_FILES['file' . $i];
             
             // Check for upload errors
             if ($file['error'] !== UPLOAD_ERR_OK) {
-                echo 'Upload error: ' . $file['error'];
+                $response['error'] = 'Upload error: ' . $file['error'];
                 continue;
-            }
-
-            if (!function_exists('ssh2_connect')) {
-                die('SSH2 extension is not installed');
             }
             
             $connection = connect();
-
-            $sftp = ssh2_sftp($connection);
-            if (!$sftp) {
-                die('SFTP session creation failed');
-            }
 
             // Move the uploaded file to a directory on your server
             $dir = '../Downloads/';
@@ -159,42 +152,28 @@
 
             $fileWithoutSpaces = str_replace(' ', '_', $file['name']);
             $fileWithoutDashes = str_replace('-', '_', $fileWithoutSpaces);
-            move_uploaded_file($file['tmp_name'], $dir . $fileWithoutDashes);
+            $destination = $dir . $fileWithoutDashes;
+            if (move_uploaded_file($file['tmp_name'], $destination)) {
+                $files = scandir($dir);
 
-            $files = scandir($dir);
-
-            foreach ($files as $file) {
-                if ($file === '.' || $file === '..') {
-                    continue;  // Skip current directory and parent directory
+                foreach ($files as $file) {
+                    if ($file === '.' || $file === '..') {
+                        continue;  // Skip current directory and parent directory
+                    }
+                    if (ssh2_scp_send($connection, $dir . $file, $_SESSION['current'] . $file, 0644)) {
+                        $response['success'] = true;
+                    } else {
+                        $response['error'] = 'Failed to send file via SCP';
+                    }
                 }
-                //ssh2_scp_send($connection, $dir . $file, $_SESSION['current'] . $file, 0644);
-                $localFile = $dir . $file;
-                $remoteFile = $_SESSION['current'] . $file;
-                $current = $_SESSION['current'];
-                
-                $command = "cd " . $current . " && touch '" . $file . "'";
-                $stream2 = ssh2_exec($connection, $command);
-
-                $sftpStream = fopen("ssh2.sftp://" . intval($sftp) . $remoteFile, 'w');
-
-                if (!$sftpStream) {
-                    die("Could not open remote file: $remoteFile");
-                }
-
-                $data_to_send = file_get_contents($localFile);
-                if ($data_to_send === false) {
-                    die("Could not open local file: $localFile");
-                }
-
-                if (fwrite($sftpStream, $data_to_send) === false) {
-                    die("Could not send data from file: $localFile");
-                }
-
-                fclose($sftpStream);
+            } else {
+                $response['error'] = 'Failed to move uploaded file';
             }
 
             unset($_FILES['file' . $i]);
         }
+
+        echo json_encode($response);
     }
 
     function dl_key_file(){

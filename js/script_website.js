@@ -180,6 +180,7 @@ $j(document).ready(function () {
     });
 
     $j(".send_files").click(function (e) {
+        e.preventDefault();
         var files = $j("#myFile").prop("files");
         console.log(files);
         send_files(files);

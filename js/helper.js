@@ -90,6 +90,12 @@ export function send_files(files) {
         contentType: false,  // tell jQuery not to set contentType
         success: function (data) {
             console.log(data);
+            // Check if the file was uploaded successfully
+            if (data.success) {
+                console.log("File uploaded successfully");
+            } else {
+                console.error("File upload failed:", data.error);
+            }
         },
         error: function (err) {
             console.log(err);
