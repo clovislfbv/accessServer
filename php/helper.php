@@ -73,11 +73,7 @@
 
     function cd(){
         $folder = $_POST["folder"];
-        for ($i = 0; $i < strlen($folder); $i++){
-            if ($folder[$i] == " "){
-                $folder = escapeshellarg($folder);
-            }
-        }
+        $folder = str_replace(" ", "\ ", $folder);
         $current = $_SESSION['current'];
         $_SESSION['current'] = $current . $folder . "/";
     }
