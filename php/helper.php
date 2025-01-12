@@ -35,6 +35,9 @@
             case "empty_keys_files":
                 empty_keys_files();
                 break;
+            case "ls_extensions":
+                ls_extensions();
+                break;
         }
     }
 
@@ -115,6 +118,7 @@
 
         $output = str_replace("/home/" . $user, ".", $output);
         $output[strlen($output) - 1] = '/';
+        $output = str_replace(' ', '\ ', $output);
         $_SESSION['current'] = $output;
 
         $current = $_SESSION['current'];
@@ -156,11 +160,13 @@
                     if ($file === '.' || $file === '..') {
                         continue;  // Skip current directory and parent directory
                     }
+                    $_SESSION['current'] = str_replace('\ ', ' ', $_SESSION['current']);
                     if (ssh2_scp_send($connection, $dir . $file, $_SESSION['current'] . $file, 0644)) {
                         $response['success'] = true;
                     } else {
                         $response['error'] = 'Failed to send file via SCP';
                     }
+                    $_SESSION['current'] = str_replace(' ', '\ ', $_SESSION['current']);
                 }
             } else {
                 $response['error'] = 'Failed to move uploaded file';
@@ -208,7 +214,9 @@
         $connection = connect();
 
         $file = $_POST["file"];
+        $_SESSION['current'] = str_replace('\ ', ' ', $_SESSION['current']);
         $remoteFile = $_SESSION['current'] . $file;
+        $_SESSION['current'] = str_replace(' ', '\ ', $_SESSION['current']);
         $dir = "../remoteFiles/";
         $localFile = $dir . $file;
 
@@ -226,6 +234,21 @@
                 ssh2_scp_recv($connection, $remoteFile, $localFile);
             }
         }
+    }
+
+    function ls_extensions(){
+        $extensions = $_POST["extensions"];
+        $current = $_SESSION['current'];
+        $value = "";
+        for ($i = 0; $i < count($extensions); $i++){
+            $value .= "*." . $extensions[$i] . " ";
+        }
+        $command = 'cd ' . $current . ' && ls ' . $value;
+        $stream = ssh2_exec(connect(), $command);
+        stream_set_blocking($stream, true);
+        $stream_out = ssh2_fetch_stream($stream, SSH2_STREAM_STDIO);
+        $output = stream_get_contents($stream_out);
+        echo json_encode($output);
     }
 
     function git_pull(){
