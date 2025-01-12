@@ -5,8 +5,8 @@ RUN pecl install ssh2-1.3.1 && docker-php-ext-enable ssh2
 
 RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
 
-RUN echo "upload_max_filesize = 20000M" > /usr/local/etc/php/conf.d/upload.ini
-RUN echo "post_max_size = 20000M" >> /usr/local/etc/php/conf.d/upload.ini
+RUN echo "upload_max_filesize = 1400000000M" > /usr/local/etc/php/conf.d/upload.ini
+RUN echo "post_max_size = 1400000000M" >> /usr/local/etc/php/conf.d/upload.ini
 
 RUN apt-get update && apt-get install -y certbot python3-certbot-apache
 
