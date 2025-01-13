@@ -89,12 +89,13 @@ export function send_files(files) {
         processData: false,  // tell jQuery not to process the data
         contentType: false,  // tell jQuery not to set contentType
         success: function (data) {
+            data = JSON.parse(data);
             console.log(data);
             // Check if the file was uploaded successfully
-            if (data.success) {
+            if (data["success"]) {
                 console.log("File uploaded successfully");
             } else {
-                console.error("File upload failed:", data.error);
+                console.error("File upload failed:", data["error"]);
             }
         },
         error: function (err) {

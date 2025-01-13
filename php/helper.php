@@ -141,7 +141,7 @@
                 $response['error'] = 'Upload error: ' . $file['error'];
                 continue;
             }
-            
+
             $connection = connect();
 
             // Move the uploaded file to a directory on your server
@@ -161,15 +161,20 @@
                         continue;  // Skip current directory and parent directory
                     }
                     $_SESSION['current'] = str_replace('\ ', ' ', $_SESSION['current']);
-                    if (ssh2_scp_send($connection, $dir . $file, $_SESSION['current'] . $file, 0644)) {
+                    $remoteFilePath = $_SESSION['current'] . $file;
+                    if (ssh2_scp_send($connection, $dir . $file, $remoteFilePath, 0644)) {
                         $response['success'] = true;
                     } else {
                         $response['error'] = 'Failed to send file via SCP';
+                        error_log($response['error']);
                     }
+                    ssh2_exec($connection, 'exit');
+                    ssh2_disconnect($connection);
                     $_SESSION['current'] = str_replace(' ', '\ ', $_SESSION['current']);
                 }
             } else {
                 $response['error'] = 'Failed to move uploaded file';
+                error_log($response['error']);
             }
 
             unset($_FILES['file' . $i]);
