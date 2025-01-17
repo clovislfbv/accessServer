@@ -142,8 +142,6 @@
                 continue;
             }
 
-            $connection = connect();
-
             // Move the uploaded file to a directory on your server
             $dir = '../Downloads/';
             if (!is_dir($dir)) {
@@ -157,6 +155,7 @@
                 $files = scandir($dir);
 
                 foreach ($files as $file) {
+                    $connection = connect();
                     if ($file === '.' || $file === '..') {
                         continue;  // Skip current directory and parent directory
                     }
