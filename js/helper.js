@@ -307,3 +307,18 @@ export function empty_keys_files() {
         },
     });
 }
+
+export function set_files_details(status){
+    /***
+     * commande pour savoir s'il faut afficher les détails sur les fichiers ou non
+     ***/
+    $j.ajax({
+        url: '../php/helper.php',
+        type: 'POST',
+        data: {
+            action: 'set_files_details',
+            status: status
+        },
+        async: false,
+    });
+}

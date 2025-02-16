@@ -38,6 +38,9 @@
             case "ls_extensions":
                 ls_extensions();
                 break;
+            case "set_files_details":
+                $_SESSION['files-details'] = $_POST['status'];
+                break;
         }
     }
 

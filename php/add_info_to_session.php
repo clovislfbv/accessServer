@@ -19,6 +19,8 @@
     $_SESSION['host'] = $host;
     $_SESSION['user'] = $user;  
     $_SESSION['port'] = $port;
+
+    $_SESSION['files-details'] = "unchecked";
 ?>
 <!DOCTYPE html>
 <html lang="en">

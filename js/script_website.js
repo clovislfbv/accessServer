@@ -1,4 +1,4 @@
-import { cd, resetSession, mkdir, rm, send_files, receive_file, receive_file_async, empty_downloaded_files, dl_key_file, setPubKey, setPrivKey, empty_keys_files, ls, ls_extensions, git_pull } from './helper.js';
+import { cd, resetSession, mkdir, rm, send_files, receive_file, receive_file_async, empty_downloaded_files, dl_key_file, setPubKey, setPrivKey, empty_keys_files, ls, ls_extensions, git_pull, set_files_details } from './helper.js';
 
 var $j = jQuery.noConflict();
 
@@ -298,6 +298,17 @@ $j(document).ready(function () {
         $j(".bi-arrow-left-circle").addClass("d-none");
         $j(".bi-arrow-right-circle").addClass("d-none");
         $j(".previewBody").html("");
+    });
+
+    $j(".files-details").change(function () {
+        var status;
+        if ($j(this).prop("checked")) {
+            status = "checked";
+        } else {
+            status = "unchecked";
+        }
+        set_files_details(status);
+        window.location.href = '../php/result.php';
     });
 
     window.onbeforeunload = function (event) {
