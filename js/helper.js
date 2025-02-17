@@ -185,6 +185,9 @@ export function receive_file(file) {
             file: file
         },
         async: false,
+        success: function (data) {
+            console.log(data);
+        },
         error: function (err) {
             console.log(err);
         }
@@ -203,6 +206,9 @@ export function receive_file_async(file) {
         data: {
             action: 'receive_file',
             file: file
+        },
+        success: function (data) {
+            console.log(data);
         },
     });
 }

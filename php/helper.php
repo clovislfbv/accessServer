@@ -222,28 +222,40 @@
 
     function receive_file(){
         $connection = connect();
-
+    
         $file = $_POST["file"];
         $_SESSION['current'] = str_replace('\ ', ' ', $_SESSION['current']);
         $remoteFile = $_SESSION['current'] . $file;
         $_SESSION['current'] = str_replace(' ', '\ ', $_SESSION['current']);
         $dir = "../remoteFiles/";
         $localFile = $dir . $file;
-
+    
         if (!is_dir($dir)) {
             exec("mkdir " . $dir);
         }
-
-        if (!file_exists($localFile)) {
+    
+        // Get the size of the remote file
+        $stream = ssh2_exec($connection, 'stat -c%s "' . $remoteFile . '"');
+        stream_set_blocking($stream, true);
+        $stream_out = ssh2_fetch_stream($stream, SSH2_STREAM_STDIO);
+        $remoteFileSize = trim(stream_get_contents($stream_out));
+    
+        // Check if the local file exists and get its size
+        $localFileSize = file_exists($localFile) ? filesize($localFile) : -1;
+    
+        // Compare the sizes and proceed with the download if they are different
+        if ($localFileSize != $remoteFileSize) {
             $stream = ssh2_exec($connection, '[ -d "' . $remoteFile . '" ] && echo "directory" || echo "file"');
             stream_set_blocking($stream, true);
             $stream_out = ssh2_fetch_stream($stream, SSH2_STREAM_STDIO);
             $output = stream_get_contents($stream_out);
-
+    
             if (trim($output) === 'file') {
                 ssh2_scp_recv($connection, $remoteFile, $localFile);
             }
         }
+
+        echo filesize($localFile);
     }
 
     function ls_extensions(){

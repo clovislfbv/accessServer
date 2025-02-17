@@ -201,15 +201,9 @@ $j(document).ready(function () {
         //console.log(filename);
 
         var filePath = directory + filename;
-        checkFileExists(filePath).then((exists) => {
-            if (!exists) {
-                receive_file(filename);
-                //console.log("received file");
-                processFile(filePath, filename, directory);
-            } else {
-                processFile(filePath, filename, directory);
-            }
-        });
+        receive_file(filename);
+        //console.log("received file");
+        processFile(filePath, filename, directory);
     });
 
     function processFile(filePath, filename, directory) {
