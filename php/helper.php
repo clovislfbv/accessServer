@@ -41,6 +41,9 @@
             case "set_files_details":
                 $_SESSION['files-details'] = $_POST['status'];
                 break;
+            case "set_hidden_files":
+                $_SESSION['hidden-files'] = $_POST['status'];
+                break;
         }
     }
 

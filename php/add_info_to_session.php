@@ -21,6 +21,7 @@
     $_SESSION['port'] = $port;
 
     $_SESSION['files-details'] = "unchecked";
+    $_SESSION['hidden-files'] = "unchecked";
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -17,18 +17,32 @@
     <title>Document</title>
 </head>
 <body>
-        <div class="form-check form-switch custom-switch">
-            <div class="test">
-                <?php
-                    if ($_SESSION['files-details'] == "checked") {
-                        echo "<input class='form-check-input files-details' type='checkbox' role='switch' id='flexSwitchCheckDefault' checked>";
-                    } else {
-                        echo "<input class='form-check-input files-details' type='checkbox' role='switch' id='flexSwitchCheckDefault'>";
-                    }
-                ?>
+        <div class="files_options">
+            <div class="form-check form-switch custom-switch">
+                <div>
+                    <?php
+                        if ($_SESSION['files-details'] == "checked") {
+                            echo "<input class='form-check-input files-details' type='checkbox' role='switch' id='flexSwitchCheckDefault' checked>";
+                        } else {
+                            echo "<input class='form-check-input files-details' type='checkbox' role='switch' id='flexSwitchCheckDefault'>";
+                        }
+                    ?>
+                </div>
+                <label class="form-check-label" for="flexSwitchCheckDefault"><h3>Show files details</h3></label>
             </div>
-        <label class="form-check-label" for="flexSwitchCheckDefault"><h3>Show files details</h3></label>
-        </div>
+            <div class="form-check form-switch custom-switch">
+                <div>
+                    <?php
+                        if ($_SESSION['hidden-files'] == "checked") {
+                            echo "<input class='form-check-input hidden-files' type='checkbox' role='switch' id='flexSwitchCheckDefault' checked>";
+                        } else {
+                            echo "<input class='form-check-input hidden-files' type='checkbox' role='switch' id='flexSwitchCheckDefault'>";
+                        }
+                    ?>
+                </div>
+                <label class="form-check-label" for="flexSwitchCheckDefault"><h3>Show hidden files</h3></label>
+            </div>
+        </div>   
         <?php
             function get_start_index($small, $big){
                 $index = 0;
@@ -50,21 +64,54 @@
             if (!isset($_SESSION['current'])) {
                 $_SESSION['current'] = "./";
             }
+
+            if ($_SESSION['hidden-files'] == 'checked'){
+                $hidden_files = " -a";
+            } else {
+                $hidden_files = "";
+            }
             
-            $command = 'cd ' . $_SESSION['current'] . ' && ls -a';
+            $command = 'cd ' . $_SESSION['current'] . ' && ls' . $hidden_files;
             $stream = ssh2_exec($connection, $command);
             stream_set_blocking($stream, true);
             $stream_out = ssh2_fetch_stream($stream, SSH2_STREAM_STDIO);
             $output = stream_get_contents($stream_out);
-
             $folders = explode("\n", $output);
-            $stream = ssh2_exec($connection, 'cd ' . $_SESSION['current'] . ' && ls -la');
+
+            if ($_SESSION['hidden-files'] == 'unchecked'){
+                $new_folders = array();
+                array_push($new_folders, ".");
+                array_push($new_folders, "..");
+                for ($i = 0; $i < count($folders); $i++) {
+                    array_push($new_folders, $folders[$i]);
+                }
+                $folders = $new_folders;
+            }
+
+
+            $stream = ssh2_exec($connection, 'cd ' . $_SESSION['current'] . ' && ls -l' . $hidden_files);
             stream_set_blocking($stream, true);
             $stream_out = ssh2_fetch_stream($stream, SSH2_STREAM_STDIO);
             $output = stream_get_contents($stream_out);
-
-            // Split the output into an array of lines
             $outputArray = explode("\n", $output);
+
+            if ($_SESSION['hidden-files'] == 'unchecked'){
+                $stream = ssh2_exec($connection, 'cd ' . $_SESSION['current'] . ' && ls -la');
+                stream_set_blocking($stream, true);
+                $stream_out = ssh2_fetch_stream($stream, SSH2_STREAM_STDIO);
+                $output = stream_get_contents($stream_out);
+                $newOutputArray = explode("\n", $output);
+
+                $new_output = array();
+                array_push($new_output, $outputArray[0]);
+                array_push($new_output, $newOutputArray[1]);
+                array_push($new_output, $newOutputArray[2]);
+                for ($i = 1; $i < count($outputArray); $i++) {
+                    array_push($new_output, $outputArray[$i]);
+                }
+                $outputArray = $new_output;
+            }
+
 
             for ($i = 0; $i < count($outputArray); $i++) {
                 echo "<div class='line'>";

@@ -1,4 +1,4 @@
-import { cd, resetSession, mkdir, rm, send_files, receive_file, receive_file_async, empty_downloaded_files, dl_key_file, setPubKey, setPrivKey, empty_keys_files, ls, ls_extensions, git_pull, set_files_details } from './helper.js';
+import { cd, resetSession, mkdir, rm, send_files, receive_file, receive_file_async, empty_downloaded_files, dl_key_file, setPubKey, setPrivKey, empty_keys_files, ls, ls_extensions, git_pull, set_files_details, set_hidden_files } from './helper.js';
 
 var $j = jQuery.noConflict();
 
@@ -311,11 +311,21 @@ $j(document).ready(function () {
         window.location.href = '../php/result.php';
     });
 
+    $j(".hidden-files").change(function (e) {
+        var status;
+        if ($j(this).prop("checked")) {
+            status = "checked";
+        } else {
+            status = "unchecked";
+        }
+        set_hidden_files(status);
+        window.location.href = '../php/result.php';
+    });
+
     window.onbeforeunload = function (event) {
         console.log("onbeforeunload");
         //empty_downloaded_files();
         //empty_keys_files();
     };
-
 
 });

@@ -322,3 +322,18 @@ export function set_files_details(status){
         async: false,
     });
 }
+
+export function set_hidden_files(status){
+    /***
+     * commande pour savoir s'il faut afficher les fichiers cachés ou non
+     ***/
+    $j.ajax({
+        url: '../php/helper.php',
+        type: 'POST',
+        data: {
+            action: 'set_hidden_files',
+            status: status
+        },
+        async: false,
+    });
+}

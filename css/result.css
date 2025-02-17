@@ -51,3 +51,8 @@
 .icon, .container_button {
     padding-left: 1vw;
 }
+
+.files_options {
+    display: flex;
+    justify-content: space-around;
+}
