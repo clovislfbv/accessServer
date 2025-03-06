@@ -20,6 +20,9 @@
             case "receive_file":
                 receive_file();
                 break;
+            case "receive_directory":
+                receive_folder();
+                break;
             case "empty_downloaded_files":
                 empty_downloaded_files();
                 break;
@@ -256,6 +259,53 @@
         }
 
         echo filesize($localFile);
+    }
+
+    function receive_folder(){
+        $connection = connect();
+        $folder = $_POST["folder"];
+        $current = $_SESSION['current'];
+        $remoteDir = $current . $folder;
+        $dir = "../remoteFiles/";
+        $localDir = $dir . $folder;
+    
+        // Ensure the local directory exists
+        if (!is_dir($localDir)) {
+            mkdir($localDir, 0777, true);
+        }
+    
+        // Create a temporary archive of the remote directory
+        $remoteArchive = "/tmp/" . basename($remoteDir) . ".tar.gz";
+        $command = "tar -czf $remoteArchive -C " . escapeshellarg(dirname($remoteDir)) . " " . escapeshellarg(basename($remoteDir));
+        $stream = ssh2_exec($connection, $command);
+        stream_set_blocking($stream, true);
+        stream_get_contents($stream); // Wait for the command to complete
+    
+        // Transfer the archive file
+        $localArchive = $localDir . "/remote_dir.tar.gz";
+        if (!ssh2_scp_recv($connection, $remoteArchive, $localArchive)) {
+            echo "Failed to receive the archive file.";
+            return;
+        }
+    
+        // Extract the archive locally
+        try {
+            $phar = new PharData($localArchive);
+            $phar->decompress(); // Decompress the tar.gz file
+            $phar->extractTo($localDir); // Extract the contents
+        } catch (Exception $e) {
+            echo "Failed to extract the archive: ", $e->getMessage();
+            return;
+        }
+
+        exec("chmod -R 755 " . escapeshellarg($localDir));
+        exec("chown -R www-data:www-data " . escapeshellarg($localDir)); // Adjust 'www-data' to your web server user and group
+    
+        // Clean up
+        unlink($localArchive); // Remove the local archive file
+        ssh2_exec($connection, "rm $remoteArchive"); // Remove the remote archive file
+    
+        echo "Directory received successfully";
     }
 
     function ls_extensions(){

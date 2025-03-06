@@ -176,7 +176,10 @@
                 }
 
                 if ($i > 2 && count($outputArray) - 1 != $i){
-                    echo "<img class='icon poubelle' id='del_" . $i-1 . "' src='../assets/bin.png' alt='bin-logo'></div>";
+                    echo "<img class='icon poubelle' id='del_" . $i-1 . "' src='../assets/bin.png' alt='bin-logo'>";
+                    echo "<div class='icon share_icon' id='share_" . $i-1 . "'>";
+                    echo "<svg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 0 24 24' width='24' focusable='false' aria-hidden='true' style='pointer-events: none; display: inherit; width: 100%; height: 100%;'><path d='M15 5.63 20.66 12 15 18.37V14h-1c-3.96 0-7.14 1-9.75 3.09 1.84-4.07 5.11-6.4 9.89-7.1l.86-.13V5.63M14 3v6C6.22 10.13 3.11 15.33 2 21c2.78-3.97 6.44-6 12-6v6l8-9-8-9z'></path></svg>";
+                    echo "</div></div>";
                 }
                 echo "</div></div>";
             }
@@ -213,6 +216,23 @@
                 </button>
             </div>
             <div class="modal-body text-primary git-modal-body" id="modal-body"></div>
+            <div class="modal-footer text-primary">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="shareModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary">Share your file or folder</h5>
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-primary share-modal-body" id="modal-body">
+            <p>You can share your file or folder via this link:\n</p><input type='text' id='url_to_copy' name='url_to_copy' readonly><button class="blabloubli" id='copy_url'>Copier</button>
+            </div>
             <div class="modal-footer text-primary">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>

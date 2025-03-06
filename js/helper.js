@@ -198,7 +198,7 @@ export function receive_file(file) {
 export function receive_file_async(file) {
     /***
      * commande pour télécharger un fichier depuis le serveur distant vers le client
-     * Précision : pas besoin d'attendre la fin du télécargement pour faire autre chose
+     * Précision : pas besoin d'attendre la fin du téléchargement pour faire autre chose
      ***/
     $j.ajax({
         url: '../php/helper.php',
@@ -210,6 +210,28 @@ export function receive_file_async(file) {
         success: function (data) {
             console.log(data);
         },
+    });
+}
+
+export function receive_folder(folder) {
+    /***
+     * Commande pour télécharger un dossier depuis le serveur distant vers le client
+     * Précision : obligé d'attendre la fin du téléchargement pour afficher le dossier
+     ***/
+    $j.ajax({
+        url: '../php/helper.php',
+        type: 'POST',
+        data: {
+            action: 'receive_directory',
+            folder: folder
+        },
+        async: false,
+        success: function (data) {
+            console.log(data);
+        },
+        error: function (err) {
+            console.log(err);
+        }
     });
 }
 

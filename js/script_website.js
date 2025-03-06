@@ -1,4 +1,4 @@
-import { cd, resetSession, mkdir, rm, send_files, receive_file, receive_file_async, empty_downloaded_files, dl_key_file, setPubKey, setPrivKey, empty_keys_files, ls, ls_extensions, git_pull, set_files_details, set_hidden_files } from './helper.js';
+import { cd, resetSession, mkdir, rm, send_files, receive_file, receive_file_async, empty_downloaded_files, dl_key_file, setPubKey, setPrivKey, empty_keys_files, ls, ls_extensions, git_pull, set_files_details, set_hidden_files, receive_folder } from './helper.js';
 
 var $j = jQuery.noConflict();
 
@@ -147,6 +147,39 @@ $j(document).ready(function () {
         $j("#outputGitModal").modal("show");
     });
 
+    var file_id;
+    var filename;
+    $j(".share_icon").click(function (e) {
+        e.preventDefault();
+        file_id = $j(this).attr('id').replace('share_', '');
+        filename = $j("#" + file_id).text();
+        $j(".share-modal-title").text("Share " + filename);
+        $j(".share-modal-body").html("<p>You can share your file or folder via this link:\n</p><input type='text' id='url_to_copy' name='url_to_copy' readonly><button class='blabloubli' id='copy_url'>Copier</button>");
+        if ($j("#" + file_id).hasClass("folder")) {
+            $j("#url_to_copy").val("https://access-server.ddns.net/remoteFiles/" + filename + "/");
+        } else {
+            $j("#url_to_copy").val("https://access-server.ddns.net/remoteFiles/" + filename);
+        }
+        $j("#shareModal").modal("show");
+
+        $j("#copy_url").click(function (e) {
+        console.log("copy url");
+        var copyText = $j("#url_to_copy");
+        copyText.select();
+
+        if ($j("#" + file_id).hasClass("folder")) {
+            receive_folder(filename);
+        } else {
+            receive_file(filename);
+        }
+        
+        navigator.clipboard.writeText(copyText.val()).then(function() {
+            console.log('Async: Copying to clipboard was successful!');
+        }).catch(function(err) {
+            console.error('Async: Could not copy text: ', err);
+        });
+    });
+    });
 
     $j("#drop_zone").on("dragover", function (e) {
         e.preventDefault();
