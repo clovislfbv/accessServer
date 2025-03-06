@@ -9,4 +9,4 @@ services:
       - "${port2}:${port2}"
     volumes:
       - ./:/var/www/html
-      - ./000-default.conf:/etc/apache2/sites-available/000-default.conf
+      - ./000-default.conf:/etc/apache2/conf.d/000-default.conf
