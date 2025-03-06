@@ -10,6 +10,8 @@ RUN echo "post_max_size = 1400000000M" >> /usr/local/etc/php/conf.d/upload.ini
 
 RUN apt-get update && apt-get install -y certbot python3-certbot-apache
 
+COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
+
 WORKDIR /var/www/html/
 
 EXPOSE ${port} ${port2}
