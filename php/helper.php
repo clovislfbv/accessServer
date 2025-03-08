@@ -268,10 +268,9 @@
         $remoteDir = $current . $folder;
         $dir = "../remoteFiles/";
         $localDir = $dir . $folder;
-    
-        // Ensure the local directory exists
-        if (!is_dir($localDir)) {
-            mkdir($localDir, 0777, true);
+
+        if (!is_dir($dir)) {
+            exec("mkdir " . $dir);
         }
     
         // Create a temporary archive of the remote directory
@@ -282,7 +281,7 @@
         stream_get_contents($stream); // Wait for the command to complete
     
         // Transfer the archive file
-        $localArchive = $localDir . "/remote_dir.tar.gz";
+        $localArchive = $dir . "remote_dir.tar.gz";
         if (!ssh2_scp_recv($connection, $remoteArchive, $localArchive)) {
             echo "Failed to receive the archive file.";
             return;
@@ -292,7 +291,7 @@
         try {
             $phar = new PharData($localArchive);
             $phar->decompress(); // Decompress the tar.gz file
-            $phar->extractTo($localDir); // Extract the contents
+            $phar->extractTo($dir); // Extract the contents
         } catch (Exception $e) {
             echo "Failed to extract the archive: ", $e->getMessage();
             return;
@@ -302,6 +301,7 @@
         exec("chown -R www-data:www-data " . escapeshellarg($localDir)); // Adjust 'www-data' to your web server user and group
     
         // Clean up
+        unlink($dir . "remote_dir.tar"); // Remove the local archive file
         unlink($localArchive); // Remove the local archive file
         ssh2_exec($connection, "rm $remoteArchive"); // Remove the remote archive file
     
