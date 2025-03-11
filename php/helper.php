@@ -50,7 +50,7 @@
         }
     }
 
-    if (isset($_FILES['file0'])){
+    if (isset($_FILES['files'])){
         send_files();
     }
 
@@ -114,6 +114,16 @@
         $output = stream_get_contents($stream_out);
     }
 
+    function make_dir_rec($folder){
+        $current = $_SESSION['current'];
+        $command = 'cd ' . $current . ' && mkdir -p "' . $folder . '"';
+        $connection = connect();
+        $stream = ssh2_exec($connection, $command);
+        stream_set_blocking($stream, true);
+        $stream_out = ssh2_fetch_stream($stream, SSH2_STREAM_STDIO);
+        $output = stream_get_contents($stream_out);
+    }
+
     function remove(){
         $folder = $_POST["folder"];
         $current = $_SESSION['current'];
@@ -138,56 +148,59 @@
         $output2 = stream_get_contents($stream_out2);
     }
 
-    function send_files(){
-        exec("rm ../Downloads/*");
+    function send_files() {
+        exec("rm -rf ../Downloads/*");
         $response = array('success' => false, 'error' => '');
+    
+        $files = $_FILES['files'];
+        $uploadDir = '../Downloads/';
 
-        for ($i = 0; isset($_FILES['file' . $i]); $i++) {
-            $file = $_FILES['file' . $i];
-            
-            // Check for upload errors
-            if ($file['error'] !== UPLOAD_ERR_OK) {
-                $response['error'] = 'Upload error: ' . $file['error'];
-                continue;
-            }
+        for ($i = 0; $i < count($files['name']); $i++) {
+            $fileName = $files['name'][$i];
+            $fileTmpName = $files['tmp_name'][$i];
+            $fileError = $files['error'][$i];
 
-            // Move the uploaded file to a directory on your server
-            $dir = '../Downloads/';
-            if (!is_dir($dir)) {
-                exec("mkdir " . $dir);
-            }
+            if ($fileError === UPLOAD_ERR_OK) {
+                $destination = $uploadDir . $fileName;
 
-            $fileWithoutSpaces = str_replace(' ', '_', $file['name']);
-            $fileWithoutDashes = str_replace('-', '_', $fileWithoutSpaces);
-            $destination = $dir . $fileWithoutDashes;
-            if (move_uploaded_file($file['tmp_name'], $destination)) {
-                $files = scandir($dir);
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
 
-                foreach ($files as $file) {
-                    $connection = connect();
-                    if ($file === '.' || $file === '..') {
-                        continue;  // Skip current directory and parent directory
-                    }
-                    $_SESSION['current'] = str_replace('\ ', ' ', $_SESSION['current']);
-                    $remoteFilePath = $_SESSION['current'] . $file;
-                    if (ssh2_scp_send($connection, $dir . $file, $remoteFilePath, 0644)) {
-                        $response['success'] = true;
-                    } else {
-                        $response['error'] = 'Failed to send file via SCP';
-                        error_log($response['error']);
-                    }
-                    ssh2_exec($connection, 'exit');
-                    ssh2_disconnect($connection);
-                    $_SESSION['current'] = str_replace(' ', '\ ', $_SESSION['current']);
+                if (move_uploaded_file($fileTmpName, $destination)) {
+                    $response['success'] = true;
+                } else {
+                    $response['error'] = 'Failed to move uploaded file.';
+                    break;
                 }
             } else {
-                $response['error'] = 'Failed to move uploaded file';
-                error_log($response['error']);
+                $response['error'] = 'Upload error: ' . $fileError;
+                break;
             }
-
-            unset($_FILES['file' . $i]);
         }
 
+        // Send files to the remote server
+        $connection = connect();
+        for ($i = 0; $i < count($files['name']); $i++) {
+            $fileName = $files['name'][$i];
+            $localFilePath = $uploadDir . $fileName;
+            $remoteDir = dirname($files["full_path"][$i]);
+
+            make_dir_rec($_SESSION["current"] . $remoteDir);
+
+            $remoteFilePath = $_SESSION['current'] . $remoteDir . "/" . str_replace(' ', '_', $fileName);
+
+            if (ssh2_scp_send($connection, $localFilePath, $remoteFilePath, 0644)) {
+                $response['success'] = true;
+            } else {
+                $response['error'] = 'Failed to send file via SCP';
+                error_log($response['error']);
+                break;
+            }
+        }
+        ssh2_exec($connection, 'exit');
+        ssh2_disconnect($connection);
+    
         echo json_encode($response);
     }
 

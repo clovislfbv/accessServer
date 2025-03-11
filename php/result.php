@@ -186,7 +186,7 @@
         ?>
     <div class="new_folder float-left">
         <a class="create_folder" href="result.php"><h3>Créer un nouveau dossier</h3></a>
-        <input type="file" id="myFile" name="filename" multiple><button class="send_files d-none" type="submit" class="btn btn-primary">Send files</button><button class="cancel_files d-none" type="submit" class="btn btn-primary">Cancel</button>
+        <input type="file" id="myFile" name="filename" webkitdirectory directory multiple><button class="send_files d-none" type="submit" class="btn btn-primary">Send files</button><button class="cancel_files d-none" type="submit" class="btn btn-primary">Cancel</button>
         <div id="drop_zone">Drop your files here</div>
     </div>
     <div class="modal" id="confirmModal" tabindex="-1" role="dialog">

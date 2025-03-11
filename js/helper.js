@@ -75,11 +75,14 @@ export function send_files(files) {
     var formData = new FormData();
 
     for (var i = 0; i < files.length; i++) {
-        formData.append('file' + i, files[i]);
+        var file = files[i];
+        var relativePath = file.webkitRelativePath || file.name;
+        formData.append('files[]', file, relativePath);
     }
 
     console.log(files);
     console.log(formData);
+    console.log(files[0].webkitRelativePath)
 
     $j.ajax({
         url: '../php/helper.php',
@@ -89,6 +92,7 @@ export function send_files(files) {
         processData: false,  // tell jQuery not to process the data
         contentType: false,  // tell jQuery not to set contentType
         success: function (data) {
+            console.log(data);
             data = JSON.parse(data);
             console.log(data);
             // Check if the file was uploaded successfully
