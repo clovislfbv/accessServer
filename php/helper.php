@@ -139,7 +139,7 @@
     }
 
     function send_files(){
-        exec("rm ../Downloads/*");
+        exec("rm ../Downloads/.* ../Downloads/*");
         $response = array('success' => false, 'error' => '');
 
         for ($i = 0; isset($_FILES['file' . $i]); $i++) {
