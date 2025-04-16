@@ -1,0 +1,5 @@
+FROM bitnami/mariadb
+
+WORKDIR /docker-entrypoint-initdb.d/
+
+EXPOSE 3307
