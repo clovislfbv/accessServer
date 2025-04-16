@@ -74,7 +74,7 @@ $j(document).ready(function () {
         e.preventDefault();
         var folder = $j(this).text();
         cd(folder);
-        empty_downloaded_files();
+        //empty_downloaded_files();
         window.location.href = '../php/result.php';
     });
 

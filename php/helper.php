@@ -372,6 +372,35 @@
         }
     }
 
+    function remove_local_files() {
+        include("conn.php");
+
+        $query = "SELECT path FROM files WHERE user='" . $_SESSION["user"] . "' AND server_ip='" . $_SESSION["host"] . "' AND end_time < NOW()";
+        $result = $conn->query($query);
+
+        // Check if the query executed successfully
+        if (!$result) {
+            echo "Query error: " . $conn->error . "<br>";
+            return;
+        }
+
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $filePath = $row['path'];
+
+                if (file_exists($filePath)) {
+                    if (is_dir($filePath)) {
+                        exec("rm -rf " . escapeshellarg($filePath));
+                    } else {
+                        unlink($filePath);
+                    }
+                }
+            }
+        }
+
+        $conn->query("DELETE FROM files WHERE user='" . $_SESSION["user"] . "' AND server_ip='" . $_SESSION["host"] . "' AND end_time < NOW()");
+    }
+
     function empty_downloaded_files(){
         exec("rm -rf ../remoteFiles/");
     }

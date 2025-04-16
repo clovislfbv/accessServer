@@ -24,10 +24,13 @@
     $_SESSION['hidden-files'] = "unchecked";
 
     include_once("conn.php");
+    include_once("helper.php");
 
     if ($conn->connect_error){
         die("Error : " . $conn->connect_error);
     }
+
+    remove_local_files();
 ?>
 <!DOCTYPE html>
 <html lang="en">
