@@ -224,6 +224,8 @@
     }
 
     function receive_file(){
+        include_once("conn.php");
+
         $connection = connect();
     
         $file = $_POST["file"];
@@ -255,6 +257,12 @@
     
             if (trim($output) === 'file') {
                 ssh2_scp_recv($connection, $remoteFile, $localFile);
+
+                $query = "INSERT INTO files (user, server_ip, path, end_time) VALUES ('" . $_SESSION["user"] . "', '" . $_SESSION["host"] . "', '" . $localFile . "', NOW() + INTERVAL 5 MINUTE)";
+                $conn->query($query);
+                if ($conn->error) {
+                    echo "Error: " . $conn->error;
+                }
             }
         }
 
@@ -262,6 +270,8 @@
     }
 
     function receive_folder(){
+        include_once("conn.php");
+
         $connection = connect();
         $folder = $_POST["folder"];
         $current = $_SESSION['current'];
@@ -285,6 +295,12 @@
         if (!ssh2_scp_recv($connection, $remoteArchive, $localArchive)) {
             echo "Failed to receive the archive file.";
             return;
+        }
+
+        $query = "INSERT INTO files (user, server_ip, path, end_time) VALUES ('" . $_SESSION["user"] . "', '" . $_SESSION["host"] . "', '" . $localDir . "', NOW() + INTERVAL 5 MINUTE)";
+        $conn->query($query);
+        if ($conn->error) {
+            echo "Error: " . $conn->error;
         }
     
         // Extract the archive locally

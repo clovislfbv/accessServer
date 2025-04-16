@@ -23,6 +23,7 @@ services:
       MARIADB_DATABASE: ${db_name}
       MARIADB_USER: ${username}
       MARIADB_PASSWORD: ${pswd}
+      TZ: Europe/Paris
     ports:
       - "127.0.0.1:${port_db}:${port_db2}"
     volumes:

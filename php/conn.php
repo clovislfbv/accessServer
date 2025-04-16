@@ -1,9 +1,25 @@
 <?php
+    include_once("env.php");
+
+    if (!isset($_SESSION)) {
+        session_start();
+    }
+
     $host = $_SESSION['host'];
     $user = $_SESSION['user'];
     $port = $_SESSION['port'];
 
-    global $connection;
+    $servername = "db";
+    $username = getenv('username');
+    $password = getenv('pswd');
+    $dbname = getenv('db_name');
+
+    global $connection, $conn;
+
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    if ($conn->connect_error){
+        die("Error : " . $conn->connect_error);
+    }
 
     $connection = ssh2_connect($host, $port);
 

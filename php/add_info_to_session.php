@@ -22,6 +22,12 @@
 
     $_SESSION['files-details'] = "unchecked";
     $_SESSION['hidden-files'] = "unchecked";
+
+    include_once("conn.php");
+
+    if ($conn->connect_error){
+        die("Error : " . $conn->connect_error);
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -32,6 +38,5 @@
     <title>accessServer</title>
 </head>
 <body>
-    
 </body>
 </html>
