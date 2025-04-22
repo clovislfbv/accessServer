@@ -258,7 +258,12 @@
             if (trim($output) === 'file') {
                 ssh2_scp_recv($connection, $remoteFile, $localFile);
 
-                $query = "INSERT INTO files (user, server_ip, path, end_time) VALUES ('" . $_SESSION["user"] . "', '" . $_SESSION["host"] . "', '" . $localFile . "', NOW() + INTERVAL 5 MINUTE)";
+                $pwd = ssh2_exec($connection, 'pwd');
+                stream_set_blocking($pwd, true);
+                $pwd_out = ssh2_fetch_stream($pwd, SSH2_STREAM_STDIO);
+                $output = stream_get_contents($pwd_out);
+
+                $query = "INSERT INTO files (user, server_ip, path, pwd, end_time) VALUES ('" . $_SESSION["user"] . "', '" . $_SESSION["host"] . "', '" . $localFile . "', '" . $output . "/" . $file . "', NOW() + INTERVAL 5 MINUTE)";
                 $conn->query($query);
                 if ($conn->error) {
                     echo "Error: " . $conn->error;
@@ -297,7 +302,12 @@
             return;
         }
 
-        $query = "INSERT INTO files (user, server_ip, path, end_time) VALUES ('" . $_SESSION["user"] . "', '" . $_SESSION["host"] . "', '" . $localDir . "', NOW() + INTERVAL 5 MINUTE)";
+        $pwd = ssh2_exec($connection, 'pwd');
+        stream_set_blocking($pwd, true);
+        $pwd_out = ssh2_fetch_stream($pwd, SSH2_STREAM_STDIO);
+        $output = stream_get_contents($pwd_out);
+
+        $query = "INSERT INTO files (user, server_ip, path, pwd, end_time) VALUES ('" . $_SESSION["user"] . "', '" . $_SESSION["host"] . "', '" . $localDir . "', '" . $output . "/" . $folder . "', NOW() + INTERVAL 5 MINUTE)";
         $conn->query($query);
         if ($conn->error) {
             echo "Error: " . $conn->error;
@@ -400,6 +410,30 @@
 
         $conn->query("DELETE FROM files WHERE end_time < NOW()");
     }
+
+    function get_all_temp_files_from_user_and_server($user, $server_ip){
+        include("conn.php");
+
+        $query = "SELECT pwd, end_time FROM files WHERE user = '" . $user . "' AND server_ip = '" . $server_ip . "'";
+        $result = $conn->query($query);
+
+        // Check if the query executed successfully
+        if (!$result) {
+            echo "Query error: " . $conn->error . "<br>";
+            return;
+        }
+        $files = array();
+
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $filePath = $row['pwd'];
+                $end_time = $row['end_time'];
+
+                $files[] = array('pwd' => $filePath, 'end_time' => $end_time);
+            }
+        }
+        return $files;
+    }   
 
     function empty_downloaded_files(){
         exec("rm -rf ../remoteFiles/");

@@ -17,6 +17,17 @@
     <title>Document</title>
 </head>
 <body>
+        <header>
+            <div class="header">
+                <h1 class="main_title">
+                    accessServer
+                </h1>
+                <nav class="main_nav">
+                    <a href="result.php">Parcourir vos fichiers sur votre serveur</a>
+                    <a href="temp_files.php">Vos fichiers temporaires sur ce site web</a>
+                </nav>
+            </div>
+        </header>
         <div class="files_options">
             <div class="form-check form-switch custom-switch">
                 <div>

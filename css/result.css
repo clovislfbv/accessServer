@@ -56,3 +56,33 @@
     display: flex;
     justify-content: space-around;
 }
+
+.main_title {
+    display: flex;
+    justify-content: center;
+}
+
+.main_nav {
+    display: flex;
+    justify-content: space-around; /* Center the navigation links */
+    gap: 2rem; /* Add spacing between links */
+    padding: 1rem; /* Add padding for better spacing */
+    border-radius: 8px; /* Rounded corners */
+}
+
+.main_nav a {
+    text-decoration: none; /* Remove underline from links */
+    color: #007bff; /* Bootstrap primary color */
+    font-weight: bold; /* Make the text bold */
+    transition: color 0.3s ease, transform 0.3s ease; /* Smooth hover effect */
+}
+
+.main_nav a:hover {
+    color: #0056b3; /* Darker shade on hover */
+    transform: scale(1.1); /* Slight zoom effect */
+}
+
+.header {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+    background-color: #f8f9fa; /* Light background color */
+}
