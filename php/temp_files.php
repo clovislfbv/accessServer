@@ -14,6 +14,7 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <script src="../js/script_website.js" type="module"></script>
+        <script src="../js/temp_files.js" type="module"></script>
         <title>Document</title>
     </head>
     <body>
@@ -30,6 +31,7 @@
         </header>
         <?php
             include_once "helper.php";
+            remove_local_files();
 
             $files = get_all_temp_files_from_user_and_server($_SESSION['user'], $_SESSION['host']);
             
@@ -42,6 +44,7 @@
                 echo '</tr>';
                 echo '</thead>';
                 echo '<tbody>';
+                $index = 0;
                 foreach ($files as $file) {
                     // Set the timezone explicitly for both DateTime objects
                     $timezone = new DateTimeZone('Europe/Paris');
@@ -52,12 +55,13 @@
                     $interval = $currentTime->diff($endTime);
 
                     // Format the time difference
-                    $timeRemaining = $interval->format('%d days, %h hours, %i minutes, %s seconds');
+                    $timeRemaining = $interval->format('%d days %h hours %i minutes %s seconds');
                     
-                    echo '<tr>';
-                    echo '<td>' . htmlspecialchars($file['pwd']) . '</td>';
-                    echo '<td>' . htmlspecialchars($timeRemaining) . '</td>';
+                    echo '<tr class="row_'. $index .'">';
+                    echo '<td class="path">' . htmlspecialchars($file['pwd']) . '</td>';
+                    echo '<td class="time_remaining">' . htmlspecialchars($timeRemaining) . '</td>';
                     echo '</tr>';
+                    $index++;
                 }
                 echo '</tbody>';
                 echo '</table>';

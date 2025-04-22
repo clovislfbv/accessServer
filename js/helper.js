@@ -365,3 +365,41 @@ export function set_hidden_files(status){
         async: false,
     });
 }
+
+export function get_end_time_from_path(path) {
+    /***
+     * commande pour récupérer le temps restant avant la fin du téléchargement
+     ***/
+    var end_time = 0;
+    $j.ajax({
+        url: '../php/helper.php',
+        type: 'POST',
+        data: {
+            action: 'get_end_time_from_path',
+            path: path,
+        },
+        async: false,
+        success: function (data) {
+            end_time = data;
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
+    return end_time;
+}
+
+export function remove_local_file(path) {
+    /***
+     * commande pour supprimer un fichier local
+     ***/
+    $j.ajax({
+        url: '../php/helper.php',
+        type: 'POST',
+        data: {
+            action: 'remove_local_file',
+            path: path
+        },
+        async: false,
+    });
+}

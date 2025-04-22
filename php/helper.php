@@ -47,6 +47,12 @@
             case "set_hidden_files":
                 $_SESSION['hidden-files'] = $_POST['status'];
                 break;
+            case "get_end_time_from_path":
+                get_end_time_from_path();
+                break;
+            case "remove_local_file":
+                remove_local_files();
+                break;
         }
     }
 
@@ -262,6 +268,7 @@
                 stream_set_blocking($pwd, true);
                 $pwd_out = ssh2_fetch_stream($pwd, SSH2_STREAM_STDIO);
                 $output = stream_get_contents($pwd_out);
+                $output = str_replace("\n", "", $output);
 
                 $query = "INSERT INTO files (user, server_ip, path, pwd, end_time) VALUES ('" . $_SESSION["user"] . "', '" . $_SESSION["host"] . "', '" . $localFile . "', '" . $output . "/" . $file . "', NOW() + INTERVAL 5 MINUTE)";
                 $conn->query($query);
@@ -306,6 +313,9 @@
         stream_set_blocking($pwd, true);
         $pwd_out = ssh2_fetch_stream($pwd, SSH2_STREAM_STDIO);
         $output = stream_get_contents($pwd_out);
+        $output = str_replace("\n", "", $output);
+
+        echo $output . "/" . $folder;
 
         $query = "INSERT INTO files (user, server_ip, path, pwd, end_time) VALUES ('" . $_SESSION["user"] . "', '" . $_SESSION["host"] . "', '" . $localDir . "', '" . $output . "/" . $folder . "', NOW() + INTERVAL 5 MINUTE)";
         $conn->query($query);
@@ -441,4 +451,36 @@
 
     function empty_keys_files(){
         exec("rm ../Keys/*");
+    }
+
+    function get_end_time_from_path(){
+        include("conn.php");
+
+        $path = $_POST['path'];
+        $user = $_SESSION['user'];
+        $server_ip = $_SESSION['host'];
+
+        $query = "SELECT end_time FROM files WHERE user = '" . $user . "' AND server_ip = '" . $server_ip . "' AND pwd = '" . $path . "'";
+        $result = $conn->query($query);
+
+        // Check if the query executed successfully
+        if (!$result) {
+            echo "Query error: " . $conn->error . "<br>";
+            return;
+        }
+
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                echo $row['end_time'];
+            }
+        }
+    }
+
+    function remove_local_file(){
+        $path = $_POST['path'];
+        $user = $_SESSION['user'];
+        $server_ip = $_SESSION['host'];
+
+        exec("rm -rf " . escapeshellarg($path . $file));
+        $conn->query("DELETE FROM files WHERE user = '" . $user . "' AND server_ip = '" . $server_ip . "' AND pwd = '" . $path . "'");
     }
