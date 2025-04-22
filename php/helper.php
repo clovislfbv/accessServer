@@ -375,7 +375,7 @@
     function remove_local_files() {
         include("conn.php");
 
-        $query = "SELECT path FROM files WHERE user='" . $_SESSION["user"] . "' AND server_ip='" . $_SESSION["host"] . "' AND end_time < NOW()";
+        $query = "SELECT path FROM files WHERE end_time < NOW()";
         $result = $conn->query($query);
 
         // Check if the query executed successfully
@@ -398,7 +398,7 @@
             }
         }
 
-        $conn->query("DELETE FROM files WHERE user='" . $_SESSION["user"] . "' AND server_ip='" . $_SESSION["host"] . "' AND end_time < NOW()");
+        $conn->query("DELETE FROM files WHERE end_time < NOW()");
     }
 
     function empty_downloaded_files(){
