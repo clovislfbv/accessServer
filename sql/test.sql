@@ -31,6 +31,7 @@ CREATE TABLE `files` (
   `user` varchar(255) NOT NULL,
   `server_ip` varchar(255) NOT NULL,
   `path` varchar(255) NOT NULL,
+  `pwd` varchar(255) NOT NULL,
   `end_time` datetime NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 COMMIT;
