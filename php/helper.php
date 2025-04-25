@@ -264,7 +264,7 @@
             if (trim($output) === 'file') {
                 ssh2_scp_recv($connection, $remoteFile, $localFile);
 
-                $pwd = ssh2_exec($connection, 'pwd');
+                $pwd = ssh2_exec($connection, 'cd ' . $_SESSION['current'] . ' && pwd');
                 stream_set_blocking($pwd, true);
                 $pwd_out = ssh2_fetch_stream($pwd, SSH2_STREAM_STDIO);
                 $output = stream_get_contents($pwd_out);
@@ -309,7 +309,7 @@
             return;
         }
 
-        $pwd = ssh2_exec($connection, 'pwd');
+        $pwd = ssh2_exec($connection, 'cd ' . $_SESSION['current'] . ' && pwd');
         stream_set_blocking($pwd, true);
         $pwd_out = ssh2_fetch_stream($pwd, SSH2_STREAM_STDIO);
         $output = stream_get_contents($pwd_out);
