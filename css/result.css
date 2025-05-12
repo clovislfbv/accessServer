@@ -107,7 +107,14 @@
 }
 
 .share_icon {
-  width: calc(2vh + 1.5vw);
+    width: calc(2vh + 1.5vw); /* Default size for larger screens */
+}
+
+/* Media query for smaller screens (phones) */
+@media (max-width: 768px) {
+    .share_icon {
+        width: calc(3vh + 3vw); /* Increase size on smaller screens */
+    }
 }
 
 .poubelle {
