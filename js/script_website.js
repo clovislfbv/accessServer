@@ -1,4 +1,4 @@
-import { cd, resetSession, mkdir, rm, send_files, receive_file, receive_file_async, empty_downloaded_files, dl_key_file, setPubKey, setPrivKey, empty_keys_files, ls, ls_extensions, git_pull, set_files_details, set_hidden_files, receive_folder } from './helper.js';
+import { cd, resetSession, mkdir, rm, send_files, receive_file, receive_file_async, empty_downloaded_files, dl_key_file, setPubKey, setPrivKey, empty_keys_files, ls, ls_extensions, git_pull, set_files_details, set_hidden_files, receive_folder, folder_to_file } from './helper.js';
 
 var $j = jQuery.noConflict();
 
@@ -37,6 +37,23 @@ function downloadNeighbourFile(files, index) {
     }
 }
 
+function adjustInputWidth(input) {
+    // Create a temporary span element to measure the input's value
+    const tempSpan = $j('<span>').css({
+        visibility: 'hidden',
+        position: 'absolute',
+        whiteSpace: 'nowrap',
+        font: input.css('font') // Match the font style of the input
+    }).text(input.val() || input.attr('placeholder'));
+
+    // Append the span to the body to measure its width
+    $j('body').append(tempSpan);
+    const newWidth = tempSpan.width() + 10; // Add padding
+    tempSpan.remove(); // Remove the temporary span
+
+    // Set the new width for the input
+    input.css('width', newWidth + 'px');
+}
 
 $j(document).ready(function () {
     // if (window.location.pathname.endsWith('result.php')) {
@@ -154,12 +171,13 @@ $j(document).ready(function () {
         file_id = $j(this).attr('id').replace('share_', '');
         filename = $j("#" + file_id).text();
         $j(".share-modal-title").text("Share " + filename);
-        $j(".share-modal-body").html("<p>You can share your file or folder via this link:\n</p><input type='text' id='url_to_copy' name='url_to_copy' readonly><button class='blabloubli' id='copy_url'>Copier</button>");
+        $j(".share-modal-body").html("<p>You can share your file or folder via this link:\n</p><div class='generated_url'><input type='text' id='url_to_copy' name='url_to_copy' readonly><button class='blabloubli' id='copy_url'>Copier</button></div>");
         if ($j("#" + file_id).hasClass("folder")) {
             $j("#url_to_copy").val("https://access-server.ddns.net/remoteFiles/" + filename + "/");
         } else {
             $j("#url_to_copy").val("https://access-server.ddns.net/remoteFiles/" + filename);
         }
+        adjustInputWidth($j("#url_to_copy"));
         $j("#shareModal").modal("show");
 
         $j("#copy_url").click(function (e) {
@@ -179,6 +197,22 @@ $j(document).ready(function () {
             console.error('Async: Could not copy text: ', err);
         });
     });
+    });
+
+    $j(".dl_button").click(function (e) {
+        if ($j("#" + file_id).hasClass("folder")) {
+            receive_folder(filename);
+            filename = folder_to_file(filename);
+        } else {
+            receive_file(filename);
+        }
+
+        let link = document.createElement('a');
+        link.href = "../remoteFiles/" + filename;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     });
 
     $j("#drop_zone").on("dragover", function (e) {

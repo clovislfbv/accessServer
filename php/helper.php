@@ -53,6 +53,9 @@
             case "remove_local_file":
                 remove_local_files();
                 break;
+            case "folder_to_file":
+                folder_to_file();
+                break;
         }
     }
 
@@ -483,4 +486,14 @@
 
         exec("rm -rf " . escapeshellarg($path . $file));
         $conn->query("DELETE FROM files WHERE user = '" . $user . "' AND server_ip = '" . $server_ip . "' AND pwd = '" . $path . "'");
+    }
+
+    function folder_to_file(){
+        $folder = $_POST['folder'];
+        $path = "../remoteFiles/" . $folder;
+
+        $command = "tar -czf " . escapeshellarg($path . ".tar.gz") . " " . escapeshellarg($path);
+        exec($command);
+        exec("rm -rf " . escapeshellarg($path));
+        echo $folder . ".tar.gz";
     }

@@ -86,3 +86,21 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
     background-color: #f8f9fa; /* Light background color */
 }
+
+#url_to_copy {
+    width: auto;
+}
+
+.generated_url {
+    display: flex;;
+}
+
+.dl_button {
+    width: 3.5vw;
+    height: 3.5vw; /* Ensure the height matches the width */
+    border-radius: 50%; /* Makes the border circular */
+    border: 2px solid #000; /* Add a solid border */
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center the content inside */
+}

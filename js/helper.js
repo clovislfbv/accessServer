@@ -403,3 +403,26 @@ export function remove_local_file(path) {
         async: false,
     });
 }
+
+export function folder_to_file(folder) {
+    /***
+     * commande pour créer un fichier à partir d'un dossier
+     ***/
+    let output;
+    $j.ajax({
+        url: '../php/helper.php',
+        type: 'POST',
+        data: {
+            action: 'folder_to_file',
+            folder: folder
+        },
+        async: false,
+        success: function (data) {
+            output = data;
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
+    return output;
+}
