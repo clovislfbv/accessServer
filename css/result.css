@@ -104,3 +104,7 @@
     align-items: center;
     justify-content: center; /* Center the content inside */
 }
+
+.share_icon {
+  width: calc(3vh + 1.5vw);
+}
