@@ -490,10 +490,15 @@
 
     function folder_to_file(){
         $folder = $_POST['folder'];
-        $path = "../remoteFiles/" . $folder;
+    $path = "../remoteFiles/" . $folder;
 
-        $command = "tar -czf " . escapeshellarg($path . ".tar.gz") . " " . escapeshellarg($path);
-        exec($command);
-        exec("rm -rf " . escapeshellarg($path));
-        echo $folder . ".tar.gz";
+    // Change to the parent directory and tar only the folder
+    $command = "cd " . escapeshellarg(dirname($path)) . " && tar -czf " . escapeshellarg($folder . ".tar.gz") . " " . escapeshellarg(basename($path));
+    exec($command);
+
+    // Remove the original folder
+    exec("rm -rf " . escapeshellarg($path));
+
+    // Return the tar file name
+    echo $folder . ".tar.gz";
     }

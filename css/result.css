@@ -48,6 +48,14 @@
     flex-direction: row;
 }
 
+.share_icon {
+    width: max-content; /* Explicit width */
+    height: max-content; /* Explicit height */
+    display: inline-block; /* Ensure it behaves like an inline element */
+    overflow: hidden; /* Prevent overflow issues */
+    box-sizing: content-box; /* Ensure padding and borders don't affect size */
+}
+
 .icon, .container_button {
     padding-left: 1vw;
 }
@@ -96,8 +104,8 @@
 }
 
 .dl_button {
-    width: 3.5vw;
-    height: 3.5vw; /* Ensure the height matches the width */
+    width: 3vw;
+    height: 3vw; /* Ensure the height matches the width */
     border-radius: 50%; /* Makes the border circular */
     border: 2px solid #000; /* Add a solid border */
     display: flex;
