@@ -46,6 +46,7 @@
     height: 100%;
     display: flex;
     flex-direction: row;
+    align-items: center;
 }
 
 .icon, .container_button {
@@ -106,5 +107,9 @@
 }
 
 .share_icon {
-  width: calc(3vh + 0.5vw);
+  width: calc(2vh + 1.5vw);
+}
+
+.poubelle {
+  height: 100%;
 }
