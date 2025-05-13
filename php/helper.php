@@ -343,6 +343,8 @@
         unlink($dir . "remote_dir.tar"); // Remove the local archive file
         unlink($localArchive); // Remove the local archive file
         ssh2_exec($connection, "rm $remoteArchive"); // Remove the remote archive file
+
+        //exec("python3 ../python/index.py " . $_SESSION["user"] . " " . $_SESSION["host"]);
     
         echo "Directory received successfully";
     }
