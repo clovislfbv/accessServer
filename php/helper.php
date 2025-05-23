@@ -56,6 +56,9 @@
             case "folder_to_file":
                 folder_to_file();
                 break;
+            case "update_end_time":
+                update_end_time();
+                break;
         }
     }
 
@@ -273,7 +276,7 @@
                 $output = stream_get_contents($pwd_out);
                 $output = str_replace("\n", "", $output);
 
-                $query = "INSERT INTO files (user, server_ip, path, pwd, end_time) VALUES ('" . $_SESSION["user"] . "', '" . $_SESSION["host"] . "', '" . $localFile . "', '" . $output . "/" . $file . "', NOW() + INTERVAL 5 MINUTE)";
+                $query = "INSERT INTO files (user, server_ip, path, pwd, end_time, url) VALUES ('" . $_SESSION["user"] . "', '" . $_SESSION["host"] . "', '" . $localFile . "', '" . $output . "/" . $file . "', NOW() + INTERVAL 1 HOUR, '" . "https://access-server.ddns.net/remoteFiles/" . $file . "')";
                 $conn->query($query);
                 if ($conn->error) {
                     echo "Error: " . $conn->error;
@@ -320,7 +323,7 @@
 
         echo $output . "/" . $folder;
 
-        $query = "INSERT INTO files (user, server_ip, path, pwd, end_time) VALUES ('" . $_SESSION["user"] . "', '" . $_SESSION["host"] . "', '" . $localDir . "', '" . $output . "/" . $folder . "', NOW() + INTERVAL 5 MINUTE)";
+        $query = "INSERT INTO files (user, server_ip, path, pwd, end_time, url) VALUES ('" . $_SESSION["user"] . "', '" . $_SESSION["host"] . "', '" . $localDir . "', '" . $output . "/" . $folder . "', NOW() + INTERVAL 1 HOUR, " . "'https://access-server.ddns.net/remoteFiles/" . $folder . "/')";
         $conn->query($query);
         if ($conn->error) {
             echo "Error: " . $conn->error;
@@ -429,7 +432,7 @@
     function get_all_temp_files_from_user_and_server($user, $server_ip){
         include("conn.php");
 
-        $query = "SELECT pwd, end_time FROM files WHERE user = '" . $user . "' AND server_ip = '" . $server_ip . "'";
+        $query = "SELECT pwd, end_time, url FROM files WHERE user = '" . $user . "' AND server_ip = '" . $server_ip . "'";
         $result = $conn->query($query);
 
         // Check if the query executed successfully
@@ -443,8 +446,9 @@
             while ($row = $result->fetch_assoc()) {
                 $filePath = $row['pwd'];
                 $end_time = $row['end_time'];
+                $url = $row['url'];
 
-                $files[] = array('pwd' => $filePath, 'end_time' => $end_time);
+                $files[] = array('pwd' => $filePath, 'end_time' => $end_time, 'url' => $url);
             }
         }
         return $files;
@@ -492,15 +496,36 @@
 
     function folder_to_file(){
         $folder = $_POST['folder'];
-    $path = "../remoteFiles/" . $folder;
+        $path = "../remoteFiles/" . $folder;
 
-    // Change to the parent directory and tar only the folder
-    $command = "cd " . escapeshellarg(dirname($path)) . " && tar -czf " . escapeshellarg($folder . ".tar.gz") . " " . escapeshellarg(basename($path));
-    exec($command);
+        // Change to the parent directory and tar only the folder
+        $command = "cd " . escapeshellarg(dirname($path)) . " && tar -czf " . escapeshellarg($folder . ".tar.gz") . " " . escapeshellarg(basename($path));
+        exec($command);
 
-    // Remove the original folder
-    exec("rm -rf " . escapeshellarg($path));
+        // Remove the original folder
+        exec("rm -rf " . escapeshellarg($path));
 
-    // Return the tar file name
-    echo $folder . ".tar.gz";
+        // Return the tar file name
+        echo $folder . ".tar.gz";
     }
+
+    function update_end_time(){
+        include("conn.php");
+
+        $path = $_POST['path'];
+        $end_time = $_POST['end_time'];
+        $user = $_SESSION['user'];
+        $server_ip = $_SESSION['host'];
+
+        $query = "UPDATE files SET end_time = '" . $end_time . "' WHERE user = '" . $user . "' AND server_ip = '" . $server_ip . "' AND pwd = '" . $path . "'";
+        $result = $conn->query($query);
+
+        // Check if the query executed successfully
+        if (!$result) {
+            echo "Query error: " . $conn->error . "<br>";
+            return;
+        }
+
+        echo "End time updated successfully";
+    }
+    

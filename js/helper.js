@@ -426,3 +426,25 @@ export function folder_to_file(folder) {
     });
     return output;
 }
+
+export function update_end_time(path, end_time) {
+    /***
+     * commande pour mettre à jour le temps restant avant la fin du téléchargement
+     ***/
+    $j.ajax({
+        url: '../php/helper.php',
+        type: 'POST',
+        data: {
+            action: 'update_end_time',
+            path: path,
+            end_time: end_time
+        },
+        async: false,
+        success: function (data) {
+            console.log(data);
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
+}
