@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : db
--- Généré le : mer. 16 avr. 2025 à 01:38
--- Version du serveur : 11.4.5-MariaDB
+-- Généré le : ven. 23 mai 2025 à 23:59
+-- Version du serveur : 11.4.7-MariaDB
 -- Version de PHP : 8.2.27
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -32,7 +32,8 @@ CREATE TABLE `files` (
   `server_ip` varchar(255) NOT NULL,
   `path` varchar(255) NOT NULL,
   `pwd` varchar(255) NOT NULL,
-  `end_time` datetime NOT NULL
+  `end_time` datetime NOT NULL,
+  `url` varchar(255) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 COMMIT;
 
