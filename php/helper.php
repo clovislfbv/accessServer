@@ -59,6 +59,9 @@
             case "update_end_time":
                 update_end_time();
                 break;
+            case "set_python_status":
+                $_SESSION['python-status'] = $_POST['status'];
+                break;
         }
     }
 
@@ -281,6 +284,11 @@
                 if ($conn->error) {
                     echo "Error: " . $conn->error;
                 }
+
+                if ($_SESSION["python-status"] == "false") {
+                    $_SESSION["python-status"] = "true";
+                    exec("python3 ../python/index.py " . $_SESSION["user"] . " " . $_SESSION["host"] . " > /dev/null 2>&1 &");
+                }
             }
         }
 
@@ -346,6 +354,11 @@
         unlink($dir . "remote_dir.tar"); // Remove the local archive file
         unlink($localArchive); // Remove the local archive file
         ssh2_exec($connection, "rm $remoteArchive"); // Remove the remote archive file
+
+        if ($_SESSION["python-status"] == "false") {
+            $_SESSION["python-status"] = "true";
+            exec("python3 ../python/index.py " . $_SESSION["user"] . " " . $_SESSION["host"] . " > /dev/null 2>&1 &");
+        }
 
         //exec("python3 ../python/index.py " . $_SESSION["user"] . " " . $_SESSION["host"]);
     
@@ -419,6 +432,7 @@
                 if (file_exists($filePath)) {
                     if (is_dir($filePath)) {
                         exec("rm -rf " . escapeshellarg($filePath));
+                        $_SESSION['python-status'] = "false";
                     } else {
                         unlink($filePath);
                     }

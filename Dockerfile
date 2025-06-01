@@ -1,7 +1,11 @@
 FROM php:apache
 
-RUN apt-get update && apt-get install -y openssh-server sshpass libssh2-1-dev libssh2-1
+RUN apt-get update && apt-get install -y python3 python3-pip openssh-server sshpass libssh2-1-dev libssh2-1
 RUN pecl install ssh2-1.3.1 && docker-php-ext-enable ssh2
+
+COPY python/requirements.txt python/requirements.txt
+
+RUN pip3 install -r python/requirements.txt --break-system-packages
 
 ENV TZ=Europe/Paris
 RUN echo "Europe/Paris" > /etc/timezone && \

@@ -9,6 +9,10 @@
     $user = $_SESSION['user'];
     $port = $_SESSION['port'];
 
+    if (!isset($_SESSION["python-status"])) {
+        $_SESSION["python-status"] = "false";
+    }
+
     $servername = "db";
     $username = getenv('username');
     $password = getenv('pswd');
