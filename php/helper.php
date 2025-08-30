@@ -60,7 +60,15 @@
                 update_end_time();
                 break;
             case "set_python_status":
-                $_SESSION['python-status'] = $_POST['status'];
+                $_SESSION["python-status"] = $_POST["status"];
+                break;
+            
+            case "get_python_status":
+                if (isset($_SESSION["python-status"])){
+                    echo "test : " . $_SESSION["python-status"];
+                } else {
+                    echo "false";
+                }
                 break;
         }
     }
@@ -287,7 +295,7 @@
 
                 if ($_SESSION["python-status"] == "false") {
                     $_SESSION["python-status"] = "true";
-                    exec("python3 ../python/index.py " . $_SESSION["user"] . " " . $_SESSION["host"] . " > /dev/null 2>&1 &");
+                    exec("python3 ../python/index.py " . $_SESSION["user"] . " " . $_SESSION["host"] . " " . session_id() . " > /dev/null 2>&1 &");
                 }
             }
         }
@@ -357,7 +365,7 @@
 
         if ($_SESSION["python-status"] == "false") {
             $_SESSION["python-status"] = "true";
-            exec("python3 ../python/index.py " . $_SESSION["user"] . " " . $_SESSION["host"] . " > /dev/null 2>&1 &");
+            exec("python3 ../python/index.py " . $_SESSION["user"] . " " . $_SESSION["host"] . " " . session_id() . " > /dev/null 2>&1 &");
         }
 
         //exec("python3 ../python/index.py " . $_SESSION["user"] . " " . $_SESSION["host"]);
@@ -416,7 +424,7 @@
     function remove_local_files() {
         include("conn.php");
 
-        $query = "SELECT path FROM files WHERE end_time < NOW()";
+        $query = "SELECT path FROM files WHERE end_time <= NOW()";
         $result = $conn->query($query);
 
         // Check if the query executed successfully
@@ -432,15 +440,16 @@
                 if (file_exists($filePath)) {
                     if (is_dir($filePath)) {
                         exec("rm -rf " . escapeshellarg($filePath));
-                        $_SESSION['python-status'] = "false";
                     } else {
                         unlink($filePath);
                     }
+                    $_SESSION['python-status'] = "false";
                 }
             }
         }
 
-        $conn->query("DELETE FROM files WHERE end_time < NOW()");
+        $result = $conn->query("DELETE FROM files WHERE end_time < NOW()");
+        echo $conn->affected_rows;
     }
 
     function get_all_temp_files_from_user_and_server($user, $server_ip){
