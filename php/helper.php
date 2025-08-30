@@ -70,6 +70,10 @@
                     echo "false";
                 }
                 break;
+
+            case "git_clone":
+                git_clone();
+                break;
         }
     }
 
@@ -448,8 +452,7 @@
             }
         }
 
-        $result = $conn->query("DELETE FROM files WHERE end_time < NOW()");
-        echo $conn->affected_rows;
+        $conn->query("DELETE FROM files WHERE end_time < NOW()");
     }
 
     function get_all_temp_files_from_user_and_server($user, $server_ip){
@@ -551,4 +554,18 @@
 
         echo "End time updated successfully";
     }
-    
+
+    function git_clone(){
+        include("conn.php");
+
+        $url = $_POST['url'];
+        $connection = connect();
+        $folder = $_POST["folder"];
+        $current = $_SESSION['current'];
+
+        $command = 'cd ' . $current . $folder . ' && git clone ' . escapeshellarg($url);
+        $stream = ssh2_exec($connection, $command);
+        stream_set_blocking($stream, true);
+        $stream_out = ssh2_fetch_stream($stream, SSH2_STREAM_STDIO);
+        $output = stream_get_contents($stream_out);
+    }

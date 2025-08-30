@@ -1,4 +1,4 @@
-import { cd, resetSession, mkdir, rm, send_files, receive_file, receive_file_async, empty_downloaded_files, dl_key_file, setPubKey, setPrivKey, empty_keys_files, ls, ls_extensions, git_pull, set_files_details, set_hidden_files, receive_folder, folder_to_file } from './helper.js';
+import { cd, resetSession, mkdir, rm, send_files, receive_file, receive_file_async, empty_downloaded_files, dl_key_file, setPubKey, setPrivKey, empty_keys_files, ls, ls_extensions, git_pull, set_files_details, set_hidden_files, receive_folder, folder_to_file, git_clone } from './helper.js';
 
 var $j = jQuery.noConflict();
 
@@ -125,11 +125,23 @@ $j(document).ready(function () {
     });
 
     $j(".create_folder").click(function (e) {
-        console.log("create folder")
         e.preventDefault();
-        $j(".new_folder").html('<input type="text" name="folder" id="folder" placeholder="Folder name" required><button class="valid_new_folder" type="submit" class="btn btn-primary">Create</button><button class="cancel" type="submit" class="btn btn-primary">Cancel</button>');
+        $j(".new_folder").html('<input type="text" name="folder_text" id="folder_text" placeholder="Folder name" required><button class="valid_new_folder" type="submit" class="btn btn-primary">Create</button><button class="cancel" type="submit" class="btn btn-primary">Cancel</button>');
         $j(".valid_new_folder").click(function (e) {
-            mkdir($j("#folder").val());
+            mkdir($j("#folder_text").val());
+            window.location.href = '../php/result.php';
+        });
+        $j(".cancel").click(function (e) {
+            window.location.href = '../php/result.php';
+        });
+    });
+
+    $j(".clone_repo").click(function (e) {
+        console.log("clone repo");
+        e.preventDefault();
+        $j(".new_folder").html('<input type="text" name="repo" id="repo" placeholder="Repository URL" required><button class="valid_new_repo" type="submit" class="btn btn-primary">Clone</button><button class="cancel" type="submit" class="btn btn-primary">Cancel</button>');
+        $j(".valid_new_repo").click(function (e) {
+            git_clone($j("#repo").val());
             window.location.href = '../php/result.php';
         });
         $j(".cancel").click(function (e) {

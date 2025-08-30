@@ -448,3 +448,21 @@ export function update_end_time(path, end_time) {
         }
     });
 }
+
+export function git_clone(repo) {
+    /***
+     * commande pour cloner un repo git
+     ***/
+    $j.ajax({
+        url: '../php/helper.php',
+        type: 'POST',
+        data: {
+            action: 'git_clone',
+            url: repo
+        },
+        async: false,
+        error: function (err) {
+            console.log(err);
+        }
+    });
+}
