@@ -12,12 +12,17 @@ a web server to easily send files to your remote server from anywhere via ssh
 - share a file or a directory via the share icon next to it
 - page that let the user see the temporarly files downloaded on the website's server
 - let the user whether he wants to add more or less time for the temporarily files downloaded on the website's server
+- upload a file via drag and drop or a button
+- create an empty directory via a button
 - git pull a git repo
 - git push a git repo
 
 ## Future wanted features
 - delete several files at the same time
 - why not adapt the website into a mobile application ?
+- upload a directory via drag and drop or via a button
+- edit a text file directly from the website ?
+- move a file or directory in a new directory thanks to a drag and drop option or a modal
 
 ## How to use it locally ?
 First you need to create a .env file at the root of the project with this content :
