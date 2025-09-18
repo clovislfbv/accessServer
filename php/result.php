@@ -76,6 +76,13 @@
                 $_SESSION['current'] = "./";
             }
 
+            $command = 'cd ' . $_SESSION['current'] . ' && pwd';
+            $stream = ssh2_exec($connection, $command);
+            stream_set_blocking($stream, true);
+            $stream_out = ssh2_fetch_stream($stream, SSH2_STREAM_STDIO);
+            $output = stream_get_contents($stream_out);
+            echo "<div class='current_directory'><h3>Current directory: " . $output . "</h3></div>";
+
             if ($_SESSION['hidden-files'] == 'checked'){
                 $hidden_files = " -a";
             } else {
