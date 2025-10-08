@@ -14,8 +14,8 @@ a web server to easily send files to your remote server from anywhere via ssh
 - let the user whether he wants to add more or less time for the temporarily files downloaded on the website's server
 - upload a file via drag and drop or a button
 - create an empty directory via a button
-- git pull a git repo
-- git push a git repo
+- git pull a git repo (this feature can only be used if you didn't put any password on your ssh key)
+- git clone a git repo (this feature can only be used if you didn't put any password on your ssh key)
 
 ## Future wanted features
 - delete several files at the same time
