@@ -208,6 +208,7 @@
         <div class="create_new_folders">
             <a class="create_folder" href="result.php"><h3>Créer un nouveau dossier</h3></a>
             <a class="clone_repo" href="result.php"><h3>Cloner un dépôt git</h3></a>
+            <a class="dl_file_from_url" href="result.php"><h3>Importer un fichier depuis une url</h3></a>
         </div>
         <input type="file" id="myFile" name="filename" multiple><button class="send_files d-none" type="submit" class="btn btn-primary">Send files</button><button class="cancel_files d-none" type="submit" class="btn btn-primary">Cancel</button>
         <div id="drop_zone">Drop your files here</div>

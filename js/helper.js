@@ -466,3 +466,21 @@ export function git_clone(repo) {
         }
     });
 }
+
+export function dl_file_from_url(file) {
+    /***
+     * commande pour télécharger un fichier depuis une URL
+     ***/
+    $j.ajax({
+        url: '../php/helper.php',
+        type: 'POST',
+        data: {
+            action: 'dl_file_from_url',
+            url: file
+        },
+        async: false,
+        error: function (err) {
+            console.log(err);
+        }
+    });
+}

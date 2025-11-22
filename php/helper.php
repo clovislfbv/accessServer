@@ -74,6 +74,10 @@
             case "git_clone":
                 git_clone();
                 break;
+
+            case "dl_file_from_url":
+                dl_file_from_url();
+                break;
         }
     }
 
@@ -564,6 +568,20 @@
         $current = $_SESSION['current'];
 
         $command = 'cd ' . $current . $folder . ' && git clone ' . escapeshellarg($url);
+        $stream = ssh2_exec($connection, $command);
+        stream_set_blocking($stream, true);
+        $stream_out = ssh2_fetch_stream($stream, SSH2_STREAM_STDIO);
+        $output = stream_get_contents($stream_out);
+    }
+
+    function dl_file_from_url() {
+        include("conn.php");
+
+        $url = $_POST["url"];
+        $connection = connect();
+        $current = $_SESSION["current"];
+
+        $command = 'cd ' . $current . ' && curl -O ' . escapeshellarg($url);
         $stream = ssh2_exec($connection, $command);
         stream_set_blocking($stream, true);
         $stream_out = ssh2_fetch_stream($stream, SSH2_STREAM_STDIO);

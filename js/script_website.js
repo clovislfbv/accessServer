@@ -1,4 +1,4 @@
-import { cd, resetSession, mkdir, rm, send_files, receive_file, receive_file_async, empty_downloaded_files, dl_key_file, setPubKey, setPrivKey, empty_keys_files, ls, ls_extensions, git_pull, set_files_details, set_hidden_files, receive_folder, folder_to_file, git_clone } from './helper.js';
+import { cd, resetSession, mkdir, rm, send_files, receive_file, receive_file_async, empty_downloaded_files, dl_key_file, setPubKey, setPrivKey, empty_keys_files, ls, ls_extensions, git_pull, set_files_details, set_hidden_files, receive_folder, folder_to_file, git_clone, dl_file_from_url } from './helper.js';
 
 var $j = jQuery.noConflict();
 
@@ -148,6 +148,20 @@ $j(document).ready(function () {
             window.location.href = '../php/result.php';
         });
     });
+
+    $j(".dl_file_from_url").click(function (e) {
+        console.log("upload from url");
+        e.preventDefault();
+        $j(".new_folder").html('<input type="text" name="file" id="file" placeholder="File URL" required><button class="valid_new_file" type="submit" class="btn btn-primary">Download</button><button class="cancel" type="submit" class="btn btn-primary">Cancel</button>');
+        $j(".valid_new_file").click(function (e) {
+            dl_file_from_url($j("#file").val());
+            window.location.href = '../php/result.php';
+        });
+        $j(".cancel").click(function (e) {
+            window.location.href = '../php/result.php';
+        });
+    })
+
 
     var del_id
     $j(".poubelle").click(function (e) {
