@@ -393,6 +393,7 @@ export function remove_local_file(path) {
     /***
      * commande pour supprimer un fichier local
      ***/
+    let result = null;
     $j.ajax({
         url: '../php/helper.php',
         type: 'POST',
@@ -401,7 +402,19 @@ export function remove_local_file(path) {
             path: path
         },
         async: false,
+        success: function (data) {
+            try {
+                result = typeof data === 'string' ? JSON.parse(data) : data;
+            } catch (e) {
+                result = { success: false, error: 'invalid_json', raw: data };
+            }
+        },
+        error: function (err) {
+            result = { success: false, error: 'ajax_error', details: err };
+        }
     });
+
+    return result;
 }
 
 export function folder_to_file(folder) {

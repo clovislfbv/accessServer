@@ -51,7 +51,7 @@
                 get_end_time_from_path();
                 break;
             case "remove_local_file":
-                remove_local_files();
+                remove_local_file();
                 break;
             case "folder_to_file":
                 folder_to_file();
@@ -295,7 +295,7 @@
                 $output = stream_get_contents($pwd_out);
                 $output = str_replace("\n", "", $output);
 
-                $query = "INSERT INTO files (user, server_ip, path, pwd, end_time, url) VALUES ('" . $_SESSION["user"] . "', '" . $_SESSION["host"] . "', '" . $localFile . "', '" . $output . "/" . $file . "', NOW() + INTERVAL 1 HOUR, '" . "https://access-server.ddns.net/remoteFiles/" . $file . "')";
+                $query = "INSERT INTO files (user, server_ip, path, pwd, end_time, url) VALUES ('" . $_SESSION["user"] . "', '" . $_SESSION["host"] . "', '" . $localFile . "', '" . $output . "/" . $file . "', NOW() + INTERVAL 2 HOUR, '" . "https://access-server.ddns.net/remoteFiles/" . $file . "')";
                 $conn->query($query);
                 if ($conn->error) {
                     echo "Error: " . $conn->error;
@@ -516,12 +516,30 @@
     }
 
     function remove_local_file(){
+        include("conn.php");
+
         $path = $_POST['path'];
         $user = $_SESSION['user'];
         $server_ip = $_SESSION['host'];
 
-        exec("rm -rf " . escapeshellarg($path . $file));
-        $conn->query("DELETE FROM files WHERE user = '" . $user . "' AND server_ip = '" . $server_ip . "' AND pwd = '" . $path . "'");
+        $query = "SELECT path FROM files WHERE user = '" . $user . "' AND server_ip = '" . $server_ip . "' AND pwd = '" . $path . "'";
+        $result = $conn->query($query);
+
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $rmCommand = "rm -rf " . escapeshellarg($row['path']);
+                exec($rmCommand, $rmOutput, $rmExitCode);
+            }
+        }
+
+        $dbOk = $conn->query("DELETE FROM files WHERE user = '" . $user . "' AND server_ip = '" . $server_ip . "' AND pwd = '" . $path . "'");
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => ($rmExitCode === 0) && ($dbOk !== false),
+            'rmExitCode' => $rmExitCode,
+            'path' => $path,
+        ]);
     }
 
     function folder_to_file(){
