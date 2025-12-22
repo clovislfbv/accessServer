@@ -366,6 +366,18 @@ export function set_hidden_files(status){
     });
 }
 
+export function set_user_timezone(timezone) {
+    $j.ajax({
+        url: '../php/helper.php',
+        type: 'POST',
+        data: {
+            action: 'set_user_timezone',
+            timezone: timezone,
+        },
+        async: false,
+    });
+}
+
 export function get_end_time_from_path(path) {
     /***
      * commande pour récupérer le temps restant avant la fin du téléchargement

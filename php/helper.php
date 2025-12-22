@@ -47,6 +47,9 @@
             case "set_hidden_files":
                 $_SESSION['hidden-files'] = $_POST['status'];
                 break;
+            case "set_user_timezone":
+                $_SESSION['user-timezone'] = $_POST['timezone'] ?? 'UTC';
+                break;
             case "get_end_time_from_path":
                 get_end_time_from_path();
                 break;
@@ -295,7 +298,20 @@
                 $output = stream_get_contents($pwd_out);
                 $output = str_replace("\n", "", $output);
 
-                $query = "INSERT INTO files (user, server_ip, path, pwd, end_time, url) VALUES ('" . $_SESSION["user"] . "', '" . $_SESSION["host"] . "', '" . $localFile . "', '" . $output . "/" . $file . "', NOW() + INTERVAL 2 HOUR, '" . "https://access-server.ddns.net/remoteFiles/" . $file . "')";
+                $tz = $_SESSION['user-timezone'] ?? 'UTC';
+                if (!preg_match('/^[A-Za-z_]+\/[A-Za-z_]+$/', $tz)) {
+                    $tz = 'UTC';
+                }
+
+                try {
+                    $dt = new DateTime('now', new DateTimeZone($tz));
+                } catch (Exception $e) {
+                    $dt = new DateTime('now', new DateTimeZone('UTC'));
+                }
+                $dt->add(new DateInterval('PT1H'));
+                $endTimeSql = $conn->real_escape_string($dt->format('Y-m-d H:i:s'));
+
+                $query = "INSERT INTO files (user, server_ip, path, pwd, end_time, url) VALUES ('" . $_SESSION["user"] . "', '" . $_SESSION["host"] . "', '" . $localFile . "', '" . $output . "/" . $file . "', '" . $endTimeSql . "', '" . "https://access-server.ddns.net/remoteFiles/" . $file . "')";
                 $conn->query($query);
                 if ($conn->error) {
                     echo "Error: " . $conn->error;
@@ -347,7 +363,20 @@
 
         echo $output . "/" . $folder;
 
-        $query = "INSERT INTO files (user, server_ip, path, pwd, end_time, url) VALUES ('" . $_SESSION["user"] . "', '" . $_SESSION["host"] . "', '" . $localDir . "', '" . $output . "/" . $folder . "', NOW() + INTERVAL 1 HOUR, " . "'https://access-server.ddns.net/remoteFiles/" . $folder . "/')";
+        $tz = $_SESSION['user-timezone'] ?? 'UTC';
+        if (!preg_match('/^[A-Za-z_]+\/[A-Za-z_]+$/', $tz)) {
+            $tz = 'UTC';
+        }
+
+        try {
+            $dt = new DateTime('now', new DateTimeZone($tz));
+        } catch (Exception $e) {
+            $dt = new DateTime('now', new DateTimeZone('UTC'));
+        }
+        $dt->add(new DateInterval('PT1H'));
+        $endTimeSql = $conn->real_escape_string($dt->format('Y-m-d H:i:s'));
+
+        $query = "INSERT INTO files (user, server_ip, path, pwd, end_time, url) VALUES ('" . $_SESSION["user"] . "', '" . $_SESSION["host"] . "', '" . $localDir . "', '" . $output . "/" . $folder . "', '" . $endTimeSql . "', " . "'https://access-server.ddns.net/remoteFiles/" . $folder . "/')";
         $conn->query($query);
         if ($conn->error) {
             echo "Error: " . $conn->error;

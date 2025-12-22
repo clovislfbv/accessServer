@@ -64,7 +64,8 @@
                     echo '<td class="path">' . htmlspecialchars($file['pwd']) . '</td>';
                     echo '<td class="url"><a href=' . htmlspecialchars($file['url']) . '>' . htmlspecialchars($file['url']) . '</a></td>';
                     echo '<td class="time_remaining">' . htmlspecialchars($timeRemaining) . '</td>';
-                    echo '<td class="End time"><input type="datetime-local" class="input_edit_end_time" id="input_file_' . $index . '" value="' . htmlspecialchars($file['end_time']) . '"><button class="edit_end_time" id="btn_file_' . $index . '" disabled>Update end time</button></td>';
+                    $endTimeLocal = (new DateTime($file['end_time']))->format('Y-m-d\TH:i');
+                    echo '<td class="End time"><input type="datetime-local" class="input_edit_end_time" id="input_file_' . $index . '" value="' . htmlspecialchars($endTimeLocal) . '"><button class="edit_end_time" id="btn_file_' . $index . '" disabled>Update end time</button></td>';
                     echo '</tr>';
                     $index++;
                 }
