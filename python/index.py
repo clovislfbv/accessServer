@@ -87,10 +87,22 @@ try:
                             headers=headers
                         )
 
-                        query = "DELETE FROM files WHERE end_time <= NOW() AND user='" + username + "' AND server_ip='" + server_ip + "' ORDER BY end_time LIMIT 1"
+                        query = "SELECT path FROM files WHERE end_time <= NOW() AND user='" + username + "' AND server_ip='" + server_ip + "' ORDER BY end_time"
+                        cursor.execute(query)
+                        paths = cursor.fetchall()
+
+                        query = "DELETE FROM files WHERE end_time <= NOW() AND user='" + username + "' AND server_ip='" + server_ip + "' ORDER BY end_time"
                         cursor.execute(query)
                         print(f"Rows deleted: {cursor.rowcount}")
                         current = None
+
+                        for path in paths:
+                            file_path = path[0]
+                            try:
+                                os.remove(file_path)
+                                print(f"Deleted file: {file_path}")
+                            except Exception as e:
+                                print(f"Error deleting file {file_path}: {e}")
                     else:
                         print(f"Current timestamp: {current}, Now in France: {now_in_france}")
                 
