@@ -52,3 +52,25 @@ It will build and run everything necessary for the website.
 
 When everything is done, you can access the website with this link on your browser :
 [http://localhost:YOUR_HTTP_PORT_CHOSEN](http://localhost:YOUR_PORT_CHOSEN)
+
+## HTTPS (Let's Encrypt)
+
+The stack includes a separate `certbot` service and a shared webroot for HTTP-01 challenges.
+
+1) Start the stack (Apache must be reachable from the internet on port 80):
+```
+docker compose up -d --build
+```
+
+2) Issue the certificate once (replace the domain/email if needed):
+```
+docker compose run --rm certbot certonly --webroot -w /var/www/certbot \
+	-d access-server.ddns.net --email test@test.com --agree-tos --no-eff-email
+```
+
+3) Restart Apache to load the new cert:
+```
+docker compose restart web
+```
+
+After that, renewal runs automatically inside the `certbot` service.

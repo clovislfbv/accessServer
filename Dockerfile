@@ -18,7 +18,12 @@ RUN echo "post_max_size = 1400000000M" >> /usr/local/etc/php/conf.d/upload.ini
 
 RUN apt-get update && apt-get install -y certbot python3-certbot-apache
 
+RUN a2enmod ssl
+
 COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
+COPY 000-default-ssl.conf /etc/apache2/sites-available/000-default-ssl.conf
+
+RUN a2ensite 000-default-ssl
 
 WORKDIR /var/www/html/
 
