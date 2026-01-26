@@ -4,27 +4,18 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    restart: unless-stopped
     ports:
-      - "${port}:80"
-      - "${port2}:443"
+      - "${port}:${port}"
+      - "${port2}:${port2}"
     volumes:
       - ./:/var/www/html
-      - ./000-default.conf:/etc/apache2/sites-available/000-default.conf
-      - ./000-default-ssl.conf:/etc/apache2/sites-available/000-default-ssl.conf
-      - ./certbot/www:/var/www/certbot
-      - ./certbot/conf:/etc/letsencrypt
+      - ./000-default.conf:/etc/apache2/conf.d/000-default.conf
+    entrypoint: >
+      sh -c "certbot 
+      -d access-server.ddns.net
+      --email test@test.com --agree-tos --no-eff-email"
     depends_on:
       - db
-
-  certbot:
-    image: certbot/certbot:latest
-    restart: unless-stopped
-    volumes:
-      - ./certbot/www:/var/www/certbot
-      - ./certbot/conf:/etc/letsencrypt
-    entrypoint: /bin/sh
-    command: -c "trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot --quiet; sleep 12h; done"
 
   db:
     # image: mariadb

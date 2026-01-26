@@ -18,13 +18,7 @@ RUN echo "post_max_size = 1400000000M" >> /usr/local/etc/php/conf.d/upload.ini
 
 RUN apt-get update && apt-get install -y certbot python3-certbot-apache
 
-RUN a2enmod ssl
-
 COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
-COPY 000-default-ssl.conf /etc/apache2/sites-available/000-default-ssl.conf
-
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 WORKDIR /var/www/html/
 
