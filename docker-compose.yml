@@ -10,6 +10,10 @@ services:
     volumes:
       - ./:/var/www/html
       - ./000-default.conf:/etc/apache2/conf.d/000-default.conf
+    entrypoint: >
+      sh -c "certbot 
+      -d access-server.ddns.net
+      --email test@test.com --agree-tos --no-eff-email"
     depends_on:
       - db
 
