@@ -23,10 +23,11 @@ RUN a2enmod ssl
 COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
 COPY 000-default-ssl.conf /etc/apache2/sites-available/000-default-ssl.conf
 
-RUN a2ensite 000-default-ssl
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 WORKDIR /var/www/html/
 
 EXPOSE ${port} ${port2}
 
-CMD service ssh start && apache2-foreground
+CMD ["/usr/local/bin/docker-entrypoint.sh"]

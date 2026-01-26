@@ -73,4 +73,4 @@ docker compose run --rm certbot certonly --webroot -w /var/www/certbot \
 docker compose restart web
 ```
 
-After that, renewal runs automatically inside the `certbot` service.
+After that, the `web` container will auto-enable the SSL vhost on startup, and renewal runs automatically inside the `certbot` service.
